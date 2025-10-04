@@ -1,0 +1,52 @@
+/*
+ * CSS Personalizado para Dona Bondosa
+ * Autor: Gemini
+ * Data: 2025-10-04
+ */
+
+/* --- Configurações Gerais e Fontes --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #FBF9F6; /* Cor de fundo suave e elegante */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+}
+
+/* --- Cores da Marca (Utilities) --- */
+.bg-brand-primary { background-color: #8B5E34; }   /* Marrom aconchegante */
+.text-brand-primary { color: #8B5E34; }
+.bg-brand-secondary { background-color: #D6C7AE; } /* Bege claro */
+.text-brand-secondary { color: #D6C7AE; }
+.bg-brand-accent { background-color: #A98A66; }    /* Tom de madeira claro */
+.text-brand-accent { color: #A98A66; }
+.border-brand-primary { border-color: #8B5E34; }
+
+/* --- Estilos de Componentes --- */
+
+/* Card de Produto */
+.sabonete-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.sabonete-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Animações --- */
+
+/* Animação do Loader (Spinner) */
+.loader {
+    border: 4px solid #f3f3f3; /* Cinza claro */
+    border-top: 4px solid #8B5E34; /* Cor primária da marca */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

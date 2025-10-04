@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description" content="Descubra os sabões artesanais da Dona Bondosa, feitos com ingredientes 100% naturais para um cuidado que transforma sua pele.">
+    <meta name="keywords" content="sabonete artesanal, sabão em barra, produtos naturais, cuidado com a pele, Dona Bondosa">
+    
+    <title>Dona Bondosa - Sabões Artesanais</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon">
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-3xl font-bold text-brand-primary">
+                Dona Bondosa <span class="text-brand-accent">(DB)</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#produtos" class="text-gray-600 hover:text-brand-primary transition duration-300">Produtos</a>
+                <a href="#quiz" class="text-gray-600 hover:text-brand-primary transition duration-300">Quiz</a>
+                <a href="#sobre" class="text-gray-600 hover:text-brand-primary transition duration-300">Sobre Nós</a>
+                <a href="#contato" class="text-gray-600 hover:text-brand-primary transition duration-300">Contato</a>
+            </div>
+            <a href="#produtos" class="hidden md:block bg-brand-primary text-white px-6 py-2 rounded-full hover:bg-brand-accent transition duration-300">
+                Compre Agora
+            </a>
+            <button class="md:hidden" id="mobile-menu-button">
+                <i class="fas fa-bars text-2xl text-brand-primary"></i>
+            </button>
+        </nav>
+        <div class="hidden md:hidden" id="mobile-menu">
+            <a href="#produtos" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Produtos</a>
+            <a href="#quiz" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Quiz</a>
+            <a href="#sobre" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Sobre Nós</a>
+            <a href="#contato" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Contato</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="relative h-[85vh] text-white">
+            <div class="absolute inset-0 bg-black opacity-40"></div>
+            <img src="assets/images/hero-background.jpg" alt="Bancada de madeira com sabonetes artesanais e ingredientes naturais como flores de lavanda e mel" class="w-full h-full object-cover">
+            <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+                <h1 class="text-5xl md:text-7xl font-bold mb-4 leading-tight">Sinta o Cuidado que Transforma</h1>
+                <p class="text-lg md:text-xl max-w-2xl mb-8">Sabões em barra artesanais, feitos com ingredientes naturais para uma pele radiante e saudável.</p>
+                <a href="#produtos" class="bg-white text-brand-primary font-bold px-10 py-3 rounded-full text-lg hover:bg-brand-secondary transition duration-300">
+                    Descubra Nossos Produtos
+                </a>
+            </div>
+        </section>
+
+        <section id="quiz" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-brand-primary mb-4">✨ Descubra seu Sabonete Ideal</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mb-8">Não tem certeza por onde começar? Responda duas perguntas e deixe nossa IA encontrar o sabonete perfeito para você.</p>
+                <form id="quiz-form" class="max-w-xl mx-auto bg-brand-secondary p-8 rounded-lg shadow-lg">
+                    <div class="mb-6 text-left">
+                        <label class="font-bold text-lg text-brand-primary mb-2 block">1. Qual é o seu tipo de pele?</label>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <label class="flex-1"><input type="radio" name="skin_type" value="oleosa" class="mr-2" required>Oleosa</label>
+                            <label class="flex-1"><input type="radio" name="skin_type" value="seca" class="mr-2">Seca</label>
+                            <label class="flex-1"><input type="radio" name="skin_type" value="sensível" class="mr-2">Sensível</label>
+                            <label class="flex-1"><input type="radio" name="skin_type" value="normal" class="mr-2">Normal</label>
+                        </div>
+                    </div>
+                    <div class="mb-8 text-left">
+                        <label class="font-bold text-lg text-brand-primary mb-2 block">2. Qual sensação você busca no banho?</label>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                           <label class="flex-1"><input type="radio" name="sensation" value="relaxamento" class="mr-2" required>Relaxamento</label>
+                           <label class="flex-1"><input type="radio" name="sensation" value="limpeza profunda" class="mr-2">Limpeza Profunda</label>
+                           <label class="flex-1"><input type="radio" name="sensation" value="hidratação" class="mr-2">Hidratação Intensa</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="bg-brand-primary text-white font-bold px-10 py-3 rounded-full text-lg hover:bg-brand-accent transition duration-300">
+                        Encontrar meu sabonete
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="produtos" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-brand-primary mb-4">Nossa Coleção de Cuidados</h2>
+                <p class="text-gray-600 max-w-xl mx-auto mb-12">Cada barra é uma experiência única, criada para nutrir seu corpo e alma.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="sabonete-card bg-white rounded-lg shadow-lg overflow-hidden text-left">
+                        <img src="assets/images/sabonete-lavanda.jpg" alt="Sabão em barra de Lavanda Relaxante em uma base rústica" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-2xl font-bold text-brand-primary">Lavanda Relaxante</h3>
+                                <button class="poetic-button text-2xl text-brand-accent hover:text-yellow-500 transition" title="Gerar Descrição Poética ✨">✨</button>
+                            </div>
+                            <p class="product-description text-gray-600 mb-4 h-24">Perfeito para um banho calmante antes de dormir. Alivia o estresse e acalma a pele.</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-xl font-bold text-brand-accent">R$ 22,00</span>
+                                <button class="bg-brand-primary text-white px-5 py-2 rounded-full hover:bg-brand-accent transition duration-300"><i class="fas fa-shopping-cart mr-2"></i> Adicionar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sabonete-card bg-white rounded-lg shadow-lg overflow-hidden text-left">
+                        <img src="assets/images/sabonete-argila.jpg" alt="Sabão em barra de Argila Verde Detox com folhas ao fundo" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                             <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-2xl font-bold text-brand-primary">Argila Verde Detox</h3>
+                                <button class="poetic-button text-2xl text-brand-accent hover:text-yellow-500 transition" title="Gerar Descrição Poética ✨">✨</button>
+                            </div>
+                            <p class="product-description text-gray-600 mb-4 h-24">Limpeza profunda para peles oleosas. Remove impurezas e controla a oleosidade.</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-xl font-bold text-brand-accent">R$ 24,00</span>
+                                <button class="bg-brand-primary text-white px-5 py-2 rounded-full hover:bg-brand-accent transition duration-300"><i class="fas fa-shopping-cart mr-2"></i> Adicionar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sabonete-card bg-white rounded-lg shadow-lg overflow-hidden text-left">
+                        <img src="assets/images/sabonete-aveia.jpg" alt="Sabão em barra de Aveia e Mel com favos de mel" class="w-full h-56 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-2xl font-bold text-brand-primary">Aveia e Mel Hidratante</h3>
+                                <button class="poetic-button text-2xl text-brand-accent hover:text-yellow-500 transition" title="Gerar Descrição Poética ✨">✨</button>
+                            </div>
+                            <p class="product-description text-gray-600 mb-4 h-24">Esfoliação suave e hidratação intensa para uma pele macia e renovada.</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-xl font-bold text-brand-accent">R$ 25,00</span>
+                                <button class="bg-brand-primary text-white px-5 py-2 rounded-full hover:bg-brand-accent transition duration-300"><i class="fas fa-shopping-cart mr-2"></i> Adicionar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sobre" class="bg-brand-secondary py-16 md:py-24">
+            <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <img src="assets/images/sobre-nos.jpg" alt="Mãos de uma artesã trabalhando na produção de sabonetes" class="rounded-lg shadow-2xl w-full">
+                </div>
+                <div class="md:w-1/2 text-center md:text-left">
+                    <h2 class="text-4xl font-bold text-brand-primary mb-4">A Essência da Dona Bondosa</h2>
+                    <p class="text-gray-700 leading-relaxed mb-4">A Dona Bondosa nasceu de um desejo simples: criar produtos que cuidam da pele com a mesma gentileza que a natureza cuida de nós. Cada sabão é feito à mão, em um processo lento e cuidadoso, utilizando apenas óleos vegetais, extratos botânicos e argilas puras.</p>
+                    <p class="text-gray-700 leading-relaxed">Acreditamos no poder do toque humano e na beleza dos ingredientes naturais. Por isso, nossas fórmulas são livres de químicos agressivos, parabenos e sulfatos. É a nossa forma de levar mais bondade para a sua rotina diária.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-center">
+                    <div class="flex flex-col items-center">
+                        <div class="bg-brand-secondary rounded-full w-20 h-20 flex items-center justify-center mb-4"><i class="fas fa-leaf text-4xl text-brand-primary"></i></div>
+                        <h4 class="text-xl font-semibold mb-2 text-brand-primary">100% Naturais</h4>
+                        <p class="text-gray-600">Ingredientes puros, vindos direto da natureza para sua pele.</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bg-brand-secondary rounded-full w-20 h-20 flex items-center justify-center mb-4"><i class="fas fa-hand-holding-heart text-4xl text-brand-primary"></i></div>
+                        <h4 class="text-xl font-semibold mb-2 text-brand-primary">Feito à Mão</h4>
+                        <p class="text-gray-600">Cada barra é única e carrega o carinho de nosso processo artesanal.</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bg-brand-secondary rounded-full w-20 h-20 flex items-center justify-center mb-4"><i class="fas fa-globe-americas text-4xl text-brand-primary"></i></div>
+                        <h4 class="text-xl font-semibold mb-2 text-brand-primary">Sustentável</h4>
+                        <p class="text-gray-600">Embalagens ecológicas e respeito ao meio ambiente em cada etapa.</p>
+                    </div>
+                     <div class="flex flex-col items-center">
+                        <div class="bg-brand-secondary rounded-full w-20 h-20 flex items-center justify-center mb-4"><i class="fas fa-tint text-4xl text-brand-primary"></i></div>
+                        <h4 class="text-xl font-semibold mb-2 text-brand-primary">Hidratação Real</h4>
+                        <p class="text-gray-600">Nossa glicerina natural proporciona uma hidratação profunda e duradoura.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white py-16 md:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-brand-primary mb-12">O que Nossos Clientes Dizem</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-brand-secondary p-8 rounded-xl"><p class="text-gray-700 italic mb-4">"Nunca pensei que um sabão em barra pudesse deixar minha pele tão macia. O de lavanda é meu favorito!"</p><div class="text-yellow-500"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><h5 class="font-bold mt-2 text-brand-primary">- Juliana M.</h5></div>
+                    <div class="bg-brand-secondary p-8 rounded-xl"><p class="text-gray-700 italic mb-4">"O sabonete de argila verde mudou minha pele. A oleosidade diminuiu muito. Recomendo demais!"</p><div class="text-yellow-500"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><h5 class="font-bold mt-2 text-brand-primary">- Carlos S.</h5></div>
+                    <div class="bg-brand-secondary p-8 rounded-xl"><p class="text-gray-700 italic mb-4">"A qualidade é incrível e o cheiro é maravilhoso. Dá pra ver que é feito com amor. Virei cliente fiel."</p><div class="text-yellow-500"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><h5 class="font-bold mt-2 text-brand-primary">- Bruna P.</h5></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-brand-accent text-white py-20 text-center">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold mb-4">Pronta para Transformar sua Pele?</h2>
+                <p class="max-w-xl mx-auto mb-8">Dê à sua pele o cuidado bondoso que ela merece. Explore nossa coleção completa e sinta a diferença.</p>
+                <a href="#produtos" class="bg-white text-brand-primary font-bold px-10 py-3 rounded-full text-lg hover:bg-brand-secondary transition duration-300">Ver Todos os Produtos</a>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contato" class="bg-brand-primary text-white">
+        <div class="container mx-auto px-6 py-12"><div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left"><div><h3 class="text-2xl font-bold mb-2">Dona Bondosa (DB)</h3><p class="text-brand-secondary">Cuidado artesanal para sua pele.</p></div><div><h4 class="font-bold text-lg mb-3">Links Rápidos</h4><ul><li class="mb-2"><a href="#produtos" class="hover:underline text-brand-secondary">Produtos</a></li><li class="mb-2"><a href="#sobre" class="hover:underline text-brand-secondary">Sobre Nós</a></li><li><a href="#" class="hover:underline text-brand-secondary">FAQ</a></li></ul></div><div><h4 class="font-bold text-lg mb-3">Siga-nos</h4><div class="flex justify-center md:justify-start space-x-4"><a href="#" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-instagram"></i></a><a href="#" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-facebook-square"></i></a><a href="#" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-whatsapp"></i></a></div><p class="text-brand-secondary mt-4">contato@donabondosa.com.br</p></div></div><div class="border-t border-brand-accent mt-10 pt-6 text-center text-brand-secondary text-sm"><p>&copy; 2025 Dona Bondosa. Todos os direitos reservados.</p></div></div>
+    </footer>
+
+    <div id="result-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-lg w-full text-center relative">
+            <button id="close-modal" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+            <div id="modal-content">
+                </div>
+        </div>
+    </div>
+
+    <script defer src="js/main.js"></script>
+</body>
+</html>
