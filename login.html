@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Dona Bondosa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-brand-secondary flex items-center justify-center h-screen">
+
+    <main class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
+        <div class="text-center mb-8">
+            <a href="index.html" class="text-4xl font-bold text-brand-primary font-serif">Dona Bondosa</a>
+            <p class="text-gray-600 mt-2">Bem-vindo(a) de volta! Faça login para continuar.</p>
+        </div>
+
+        <form id="login-form">
+            <div class="mb-4">
+                <label for="email" class="block text-brand-primary font-bold mb-2">Email</label>
+                <input type="email" id="email" name="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" required>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-brand-primary font-bold mb-2">Senha</label>
+                <input type="password" id="password" name="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" required>
+            </div>
+            <!-- LINK "ESQUECI MINHA SENHA" ADICIONADO -->
+            <div class="text-right mb-6">
+                <a href="#" id="forgot-password-link" class="text-sm text-brand-primary hover:underline">Esqueci minha senha</a>
+            </div>
+            <button type="submit" class="w-full bg-brand-primary text-white py-3 rounded-lg font-bold hover:bg-brand-accent transition duration-300">Entrar</button>
+        </form>
+
+        <div id="error-message" class="mt-4 text-center text-red-600 font-semibold"></div>
+
+        <p class="text-center mt-6 text-gray-700">
+            Não tem uma conta? <a href="cadastro.html" class="text-brand-primary hover:underline font-bold">Cadastre-se</a>
+        </p>
+    </main>
+
+    <!-- MODAL DE RECUPERAÇÃO DE SENHA ADICIONADO -->
+    <div id="recovery-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full text-left relative">
+            <button id="close-recovery-modal" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+            <h2 class="text-2xl font-bold text-brand-primary mb-4">Recuperar Senha</h2>
+            <p class="text-gray-600 mb-6">Digite seu email e enviaremos um link para você redefinir sua senha.</p>
+            <form id="recovery-form">
+                <div class="mb-4">
+                    <label for="recovery-email" class="block text-brand-primary font-bold mb-2">Email</label>
+                    <input type="email" id="recovery-email" name="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" required>
+                </div>
+                <button type="submit" class="w-full bg-brand-primary text-white py-3 rounded-lg font-bold hover:bg-brand-accent transition duration-300">Enviar Link de Recuperação</button>
+            </form>
+            <div id="recovery-message" class="mt-4 text-center font-semibold"></div>
+        </div>
+    </div>
+
+    <script type="module" src="js/auth.js"></script>
+</body>
+</html>

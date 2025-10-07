@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Dona Bondosa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-100">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-3xl font-bold text-brand-primary">Dona Bondosa <span class="text-brand-accent">(DB)</span></a>
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-gray-600 hover:text-brand-primary transition duration-300 font-semibold"><i class="fas fa-home mr-2"></i>Início</a>
+                <button id="logout-button" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-300 font-semibold">Sair</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <h1 class="text-4xl font-bold text-brand-primary mb-8">Painel do Cliente</h1>
+
+        <div class="mb-8 border-b border-gray-300">
+            <nav class="flex space-x-8">
+                <button id="tab-dados" class="py-4 px-1 border-b-2 font-semibold border-brand-primary text-brand-primary">Meus Dados</button>
+                <button id="tab-enderecos" class="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:border-gray-400 hover:text-gray-700">Meus Endereços</button>
+                <button id="tab-pedidos" class="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:border-gray-400 hover:text-gray-700">Meus Pedidos</button>
+            </nav>
+        </div>
+
+        <div id="loading-spinner" class="text-center py-10">
+            <div class="loader mx-auto"></div>
+            <p class="mt-4 text-gray-600">Carregando...</p>
+        </div>
+        
+        <div id="page-content" class="hidden">
+            <div id="content-dados">
+                <div class="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
+                    <h2 class="text-2xl font-bold text-brand-primary mb-6">Informações Pessoais</h2>
+                    <form id="profile-form">
+                         <div class="space-y-4">
+                            <div>
+                                <label for="full_name" class="block text-brand-primary font-bold mb-2">Nome Completo</label>
+                                <input type="text" id="full_name" name="full_name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" required>
+                            </div>
+                            <div>
+                                <label for="email" class="block text-brand-primary font-bold mb-2">Email</label>
+                                <input type="email" id="email" name="email" class="w-full px-3 py-2 border rounded-lg bg-gray-200 cursor-not-allowed" disabled>
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-brand-primary font-bold mb-2">Telefone</label>
+                                <input type="tel" id="phone" name="phone" placeholder="(XX) XXXXX-XXXX" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="cpf" class="block text-brand-primary font-bold mb-2">CPF</label>
+                                    <input type="text" id="cpf" name="cpf" class="w-full px-3 py-2 border rounded-lg bg-gray-200 cursor-not-allowed" disabled>
+                                </div>
+                                <div>
+                                    <label for="age" class="block text-brand-primary font-bold mb-2">Idade</label>
+                                    <input type="number" id="age" name="age" class="w-full px-3 py-2 border rounded-lg bg-gray-200 cursor-not-allowed" disabled>
+                                </div>
+                            </div>
+                             <p class="text-xs text-gray-500 -mt-2">Para alterar CPF ou Idade, entre em contato com o suporte.</p>
+                        </div>
+                        <div class="mt-8 text-right">
+                            <button type="submit" class="bg-brand-primary text-white py-2 px-6 rounded-lg font-bold hover:bg-brand-accent transition duration-300">Salvar Alterações</button>
+                        </div>
+                    </form>
+                    <div id="update-message" class="mt-4 text-center font-semibold"></div>
+                </div>
+            </div>
+
+            <div id="content-enderecos" class="hidden">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-brand-primary">Meus Endereços de Entrega</h2>
+                        <button id="add-address-btn" class="bg-brand-primary text-white py-2 px-4 rounded-lg font-bold hover:bg-brand-accent transition duration-300"><i class="fas fa-plus mr-2"></i>Adicionar Endereço</button>
+                    </div>
+                    <div id="address-list-container" class="space-y-4">
+                        </div>
+                </div>
+            </div>
+
+            <div id="content-pedidos" class="hidden">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold text-brand-primary mb-6">Histórico de Pedidos</h2>
+                    <p class="text-gray-600">Em breve, todos os seus pedidos aparecerão aqui!</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div id="address-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-lg w-full text-left relative">
+            <button id="close-address-modal" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+            <h2 id="modal-title" class="text-2xl font-bold text-brand-primary mb-6">Adicionar Novo Endereço</h2>
+            <form id="address-form" class="space-y-4">
+                <input type="hidden" id="address-id" name="id">
+                <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md" role="alert">
+                  <p>Lembrete: Entregas apenas no Distrito Federal (DF).</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-1">
+                        <label for="cep" class="block text-brand-primary font-bold mb-2">CEP</label>
+                        <input type="text" id="cep" name="cep" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" required>
+                    </div>
+                    <div class="md:col-span-2">
+                         <label for="city" class="block text-brand-primary font-bold mb-2">Cidade (RA)</label>
+                        <select id="city" name="city" class="w-full px-3 py-2 border rounded-lg bg-white" required>
+                            <option value="" disabled selected>Selecione</option>
+                            <option value="Águas Claras">Águas Claras</option>
+                            <option value="Brasília (Plano Piloto)">Brasília (Plano Piloto)</option>
+                            <option value="Ceilândia">Ceilândia</option>
+                            <option value="Gama">Gama</option>
+                            <option value="Guará">Guará</option>
+                            <option value="Lago Norte">Lago Norte</option>
+                            <option value="Lago Sul">Lago Sul</option>
+                            <option value="Núcleo Bandeirante">Núcleo Bandeirante</option>
+                            <option value="Samambaia">Samambaia</option>
+                            <option value="Santa Maria">Santa Maria</option>
+                            <option value="Sudoeste/Octogonal">Sudoeste/Octogonal</option>
+                            <option value="Taguatinga">Taguatinga</option>
+                            <option value="Vicente Pires">Vicente Pires</option>
+                            <option value="Outra">Outra</option>
+                        </select>
+                    </div>
+                </div>
+                 <div>
+                    <label for="street" class="block text-brand-primary font-bold mb-2">Endereço (Rua, Quadra, Nº)</label>
+                    <input type="text" id="street" name="street" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div>
+                    <label for="complement" class="block text-brand-primary font-bold mb-2">Complemento (Apto, Casa)</label>
+                    <input type="text" id="complement" name="complement" class="w-full px-3 py-2 border rounded-lg">
+                </div>
+                <div class="pt-4 text-right">
+                    <button type="submit" class="bg-brand-primary text-white py-2 px-6 rounded-lg font-bold hover:bg-brand-accent transition">Salvar Endereço</button>
+                </div>
+            </form>
+            <div id="address-error-message" class="mt-4 text-center font-semibold text-red-600"></div>
+        </div>
+    </div>
+
+    <script type="module" src="js/profile.js"></script>
+</body>
+</html>
