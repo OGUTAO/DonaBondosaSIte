@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Perfil - Dona Bondosa</title>
+    <title>Meu Perfil - Com Carinho</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -12,8 +12,12 @@
 
     <header class="bg-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-3xl font-bold text-brand-primary">Dona Bondosa <span class="text-brand-accent">(DB)</span></a>
+            <a href="index.html" class="text-3xl font-bold text-brand-primary">Com Carinho (DB)</a>
             <div class="flex items-center space-x-4">
+                <a href="carrinho.html" class="relative text-2xl text-brand-primary hover:text-brand-accent p-2">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-icon-badge" class="hidden absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                </a>
                 <a href="index.html" class="text-gray-600 hover:text-brand-primary transition duration-300 font-semibold"><i class="fas fa-home mr-2"></i>Início</a>
                 <button id="logout-button" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-300 font-semibold">Sair</button>
             </div>
@@ -129,6 +133,12 @@
                         </select>
                     </div>
                 </div>
+                
+                <div id="city-other-container" class="hidden">
+                    <label for="city_other" class="block text-brand-primary font-bold mb-2">Especifique a Cidade (RA)</label>
+                    <input type="text" id="city_other" name="city_other" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                </div>
+                
                  <div>
                     <label for="street" class="block text-brand-primary font-bold mb-2">Endereço (Rua, Quadra, Nº)</label>
                     <input type="text" id="street" name="street" class="w-full px-3 py-2 border rounded-lg" required>
@@ -145,6 +155,9 @@
         </div>
     </div>
 
+    <script type="module" src="js/supabaseClient.js"></script>
+    <script type="module" src="js/cart.js"></script>
+    <script type="module" src="js/session.js"></script>
     <script type="module" src="js/profile.js"></script>
 </body>
 </html>

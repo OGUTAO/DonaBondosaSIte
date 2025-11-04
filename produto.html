@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produto - Com Carinho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-100">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-3xl font-bold text-brand-primary">
+                Com Carinho
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html#produtos" class="text-gray-600 hover:text-brand-primary transition duration-300">Produtos</a>
+                <a href="index.html#quiz" class="text-gray-600 hover:text-brand-primary transition duration-300">Quiz</a>
+                <a href="index.html#sobre" class="text-gray-600 hover:text-brand-primary transition duration-300">Sobre Nós</a>
+                <a href="index.html#contato" class="text-gray-600 hover:text-brand-primary transition duration-300">Contato</a>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="carrinho.html" class="relative text-2xl text-brand-primary hover:text-brand-accent p-2">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-icon-badge" class="hidden absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        0
+                    </span>
+                </a>
+                
+                <a id="login-button" href="login.html" class="bg-brand-primary text-white px-6 py-2 rounded-full hover:bg-brand-accent transition duration-300">
+                    Login / Cadastre-se
+                </a>
+                <a id="profile-button" href="perfil.html" class="hidden bg-brand-secondary text-brand-primary font-bold px-6 py-2 rounded-full hover:bg-brand-accent hover:text-white transition duration-300">
+                    Meu Perfil
+                </a>
+                <a id="admin-button" href="admin.html" class="hidden bg-yellow-500 text-white font-bold px-6 py-2 rounded-full hover:bg-yellow-600 transition duration-300">
+                    Painel
+                </a>
+                <button id="logout-button" class="hidden bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-300 font-semibold">
+                    Sair
+                </button>
+            </div>
+            <button class="md:hidden" id="mobile-menu-button">
+                <i class="fas fa-bars text-2xl text-brand-primary"></i>
+            </button>
+        </nav>
+        <div class="hidden md:hidden" id="mobile-menu">
+            <a href="index.html#produtos" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Produtos</a>
+            <a href="index.html#quiz" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Quiz</a>
+            <a href="index.html#sobre" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Sobre Nós</a>
+            <a href="index.html#contato" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Contato</a>
+            <a href="carrinho.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Meu Carrinho</a>
+            <div id="mobile-auth-links" class="border-t border-gray-200 mt-2 pt-2">
+                 <a id="mobile-login-link" href="login.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Login / Cadastre-se</a>
+                 <a id="mobile-profile-link" href="perfil.html" class="hidden block py-2 px-4 text-sm hover:bg-brand-secondary">Meu Perfil</a>
+                 <a id="mobile-admin-link" href="admin.html" class="hidden block py-2 px-4 text-sm font-semibold text-yellow-600 hover:bg-yellow-100">Painel de Controle</a>
+                 <a id="mobile-logout-link" href="#" class="hidden block py-2 px-4 text-sm text-red-600 hover:bg-red-100">Sair</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <div id="loading-spinner" class="text-center py-20">
+            <div class="loader mx-auto" style="border-top-color: #8B5E34; width: 50px; height: 50px;"></div>
+            <p class="mt-4 text-gray-600 text-lg">Carregando produto...</p>
+        </div>
+
+        <div id="product-content" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white p-8 rounded-lg shadow-lg">
+                <div>
+                    <img id="main-image" src="" alt="Imagem principal do produto" class="w-full h-96 object-cover rounded-lg shadow-md mb-4 border">
+                    <div id="thumbnail-gallery" class="flex space-x-2 overflow-x-auto p-2">
+                    </div>
+                </div>
+
+                <div>
+                    <h1 id="product-name" class="text-4xl font-bold text-brand-primary mb-4">Nome do Produto</h1>
+                    <div id="product-price" class="text-3xl font-bold text-brand-accent mb-6">
+                    </div>
+                    <p id="product-description" class="text-gray-700 leading-relaxed mb-8">
+                        Descrição do produto...
+                    </p>
+                    
+                    <div class="flex items-center space-x-4">
+                        <button id="add-to-cart-btn" class="bg-brand-primary text-white font-bold px-10 py-3 rounded-full text-lg hover:bg-brand-accent transition duration-300">
+                            <i class="fas fa-shopping-cart mr-2"></i> Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-white p-8 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-brand-primary mb-6">Avaliações dos Clientes</h2>
+                
+                <div id="review-form-container" class="mb-8 p-6 border rounded-lg bg-gray-50">
+                    <h3 class="text-xl font-semibold text-brand-primary mb-4">Deixe sua avaliação</h3>
+                    <form id="review-form" class="hidden">
+                        <div class="mb-4">
+                            <label class="block text-brand-primary font-bold mb-2">Nota (1 a 5 estrelas):</label>
+                            <select id="review-rating" name="rating" class="w-full p-2 border rounded-lg" required>
+                                <option value="" disabled selected>Selecione uma nota</option>
+                                <option value="5">5 Estrelas (Excelente)</option>
+                                <option value="4">4 Estrelas (Bom)</option>
+                                <option value="3">3 Estrelas (Regular)</option>
+                                <option value="2">2 Estrelas (Ruim)</option>
+                                <option value="1">1 Estrela (Péssimo)</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="review-comment" class="block text-brand-primary font-bold mb-2">Seu comentário:</label>
+                            <textarea id="review-comment" name="comment" rows="4" class="w-full p-2 border rounded-lg" placeholder="Descreva sua experiência com o produto..."></textarea>
+                        </div>
+                        <button type="submit" class="bg-brand-primary text-white py-2 px-6 rounded-lg font-bold hover:bg-brand-accent transition">Enviar Avaliação</button>
+                    </form>
+                    <p id="review-login-prompt" class="text-gray-600">
+                        <a href="login.html" class="text-brand-primary font-bold hover:underline">Faça login</a> para deixar sua avaliação.
+                    </p>
+                </div>
+                
+                <div id="review-list" class="space-y-6">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer id="contato" class="bg-brand-primary text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h3 class="text-2xl font-bold mb-2">Com Carinho</h3>
+                    <p class="text-brand-secondary">Cuidado artesanal para sua pele.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-3">Links Rápidos</h4>
+                    <ul><li class="mb-2"><a href="index.html#produtos" class="hover:underline text-brand-secondary">Produtos</a></li><li class="mb-2"><a href="index.html#sobre" class="hover:underline text-brand-secondary">Sobre Nós</a></li><li><a href="#" class="hover:underline text-brand-secondary">FAQ</a></li></ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-3">Siga-nos</h4>
+                    <div class="flex justify-center md:justify-start space-x-4"><a href="#" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-instagram"></i></a><a href="#" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-facebook-square"></i></a><a href="#" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-whatsapp"></i></a></div>
+                    <p class="text-brand-secondary mt-4">contato@comcarinho.com.br</p>
+                    </div>
+            </div>
+            <div class="border-t border-brand-accent mt-10 pt-6 text-center text-brand-secondary text-sm">
+                <p>&copy; 2025 Com Carinho. Todos os direitos reservados.</p>
+                </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/supabaseClient.js"></script>
+    <script type="module" src="js/session.js"></script>
+    <script type="module" src="js/cart.js"></script>
+    <script type="module" src="js/produto.js"></script>
+</body>
+</html>

@@ -1,63 +1,96 @@
-// Importa o cliente Supabase do nosso arquivo central
 import { supabase } from './supabaseClient.js';
+import { updateCartIcon } from './cart.js';
 
-// Executa quando o conteúdo da página estiver carregado
+const loginButton = document.getElementById('login-button');
+const profileButton = document.getElementById('profile-button');
+const logoutButton = document.getElementById('logout-button');
+const adminButton = document.getElementById('admin-button');
+
+const mobileLoginLink = document.getElementById('mobile-login-link');
+const mobileProfileLink = document.getElementById('mobile-profile-link');
+const mobileLogoutLink = document.getElementById('mobile-logout-link');
+const mobileAdminLink = document.getElementById('mobile-admin-link');
+
+const updateUserUI = (user, profile) => {
+    if (user && profile) {
+        loginButton?.classList.add('hidden');
+        profileButton?.classList.remove('hidden');
+        logoutButton?.classList.remove('hidden');
+        
+        mobileLoginLink?.classList.add('hidden');
+        mobileProfileLink?.classList.remove('hidden');
+        mobileLogoutLink?.classList.remove('hidden');
+
+        if (profile.role === 'admin' || profile.role === 'developer') {
+            adminButton?.classList.remove('hidden');
+            mobileAdminLink?.classList.remove('hidden');
+        } else {
+            adminButton?.classList.add('hidden');
+            mobileAdminLink?.classList.add('hidden');
+        }
+    } else {
+        loginButton?.classList.remove('hidden');
+        profileButton?.classList.add('hidden');
+        logoutButton?.classList.add('hidden');
+        adminButton?.classList.add('hidden');
+        
+        mobileLoginLink?.classList.remove('hidden');
+        mobileProfileLink?.classList.add('hidden');
+        mobileLogoutLink?.classList.add('hidden');
+        mobileAdminLink?.classList.add('hidden');
+    }
+};
+
+const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+        console.error('Erro ao fazer logout:', error);
+    }
+    localStorage.removeItem('userRole'); 
+    window.location.href = 'index.html';
+};
+
+const checkUserSession = async (user) => {
+    if (user) {
+        const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single();
+
+        if (error) {
+            console.error('Erro ao buscar perfil do usuário:', error.message);
+            localStorage.removeItem('userRole');
+            updateUserUI(null, null);
+        } else if (profile) {
+            localStorage.setItem('userRole', profile.role);
+            updateUserUI(user, profile);
+        } else {
+            console.warn('Sessão encontrada, mas perfil não existe na tabela "profiles".');
+            localStorage.removeItem('userRole');
+            updateUserUI(null, null);
+        }
+    } else {
+        localStorage.removeItem('userRole');
+        updateUserUI(null, null);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Seleciona os botões do header (desktop)
-    const loginButton = document.getElementById('login-button');
-    const profileButton = document.getElementById('profile-button');
-    const logoutButton = document.getElementById('logout-button');
+    updateCartIcon();
 
-    // Seleciona os links do menu mobile
-    const mobileLoginLink = document.getElementById('mobile-login-link');
-    const mobileProfileLink = document.getElementById('mobile-profile-link');
-    const mobileLogoutLink = document.getElementById('mobile-logout-link');
-
-    // Função para atualizar a interface do usuário com base no estado de login
-    const updateUserUI = (user) => {
-        if (user) {
-            // Se o usuário ESTÁ LOGADO
-            loginButton?.classList.add('hidden');
-            profileButton?.classList.remove('hidden');
-            logoutButton?.classList.remove('hidden');
-
-            mobileLoginLink?.classList.add('hidden');
-            mobileProfileLink?.classList.remove('hidden');
-            mobileLogoutLink?.classList.remove('hidden');
-        } else {
-            // Se o usuário NÃO ESTÁ LOGADO
-            loginButton?.classList.remove('hidden');
-            profileButton?.classList.add('hidden');
-            logoutButton?.classList.add('hidden');
-
-            mobileLoginLink?.classList.remove('hidden');
-            mobileProfileLink?.classList.add('hidden');
-            mobileLogoutLink?.classList.add('hidden');
-        }
-    };
-
-    // O Supabase verifica o estado da autenticação e nos avisa sempre que mudar
-    supabase.auth.onAuthStateChange((_event, session) => {
-        const user = session?.user;
-        updateUserUI(user);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        checkUserSession(session?.user);
     });
 
-    // Função para fazer logout
-    const handleLogout = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-            console.error('Erro ao fazer logout:', error);
-        } else {
-            // Redireciona para a página inicial após o logout bem-sucedido
-            window.location.href = 'index.html';
-        }
-    };
+    supabase.auth.onAuthStateChange((_event, session) => {
+        checkUserSession(session?.user);
+    });
 
-    // Adiciona o evento de clique aos botões de logout
     logoutButton?.addEventListener('click', handleLogout);
     mobileLogoutLink?.addEventListener('click', (e) => {
-        e.preventDefault(); // Previne o comportamento padrão do link
+        e.preventDefault(); 
         handleLogout();
     });
 });

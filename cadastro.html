@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - Dona Bondosa</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-brand-secondary flex items-center justify-center min-h-screen py-10">
@@ -42,56 +43,21 @@
                 <label for="email" class="block text-brand-primary font-bold mb-2">Email</label>
                 <input type="email" id="email" name="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" required>
             </div>
-            <div>
+            
+            <div class="relative">
                 <label for="password" class="block text-brand-primary font-bold mb-2">Senha (mínimo 6 caracteres)</label>
                 <input type="password" id="password" name="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" minlength="6" required>
-            </div>
-
-            <h3 class="text-lg font-semibold text-brand-primary border-b pb-2 pt-4">3. Endereço de Entrega</h3>
-            <div class="flex items-center space-x-3 bg-yellow-100 p-3 rounded-lg">
-                <input type="checkbox" id="toggle-address" class="h-5 w-5 rounded">
-                <label for="toggle-address" class="font-semibold text-yellow-800">Quero cadastrar meu endereço agora.</label>
+                <span id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" style="top: 32px;">
+                    <i class="fas fa-eye text-gray-500"></i>
+                </span>
             </div>
             
-            <div id="address-section" class="hidden space-y-4 pt-2">
-                 <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md" role="alert">
-                  <p class="font-bold">Aviso Importante</p>
-                  <p>No momento, realizamos entregas apenas no Distrito Federal (DF).</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="md:col-span-1">
-                        <label for="cep" class="block text-brand-primary font-bold mb-2">CEP</label>
-                        <input type="text" id="cep" name="cep" placeholder="00000-000" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent">
-                    </div>
-                    <div class="md:col-span-2">
-                         <label for="city" class="block text-brand-primary font-bold mb-2">Cidade (Região Administrativa)</label>
-                        <select id="city" name="city" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
-                            <option value="" disabled selected>Selecione uma cidade</option>
-                            <option value="Águas Claras">Águas Claras</option>
-                            <option value="Brasília (Plano Piloto)">Brasília (Plano Piloto)</option>
-                            <option value="Ceilândia">Ceilândia</option>
-                            <option value="Gama">Gama</option>
-                            <option value="Guará">Guará</option>
-                            <option value="Lago Norte">Lago Norte</option>
-                            <option value="Lago Sul">Lago Sul</option>
-                            <option value="Núcleo Bandeirante">Núcleo Bandeirante</option>
-                            <option value="Samambaia">Samambaia</option>
-                            <option value="Santa Maria">Santa Maria</option>
-                            <option value="Sudoeste/Octogonal">Sudoeste/Octogonal</option>
-                            <option value="Taguatinga">Taguatinga</option>
-                            <option value="Vicente Pires">Vicente Pires</option>
-                            <option value="Outra (especificar em endereço)">Outra</option>
-                        </select>
-                    </div>
-                </div>
-                 <div>
-                    <label for="street" class="block text-brand-primary font-bold mb-2">Endereço (Rua/Avenida, Quadra, Número)</label>
-                    <input type="text" id="street" name="street" placeholder="Ex: QNM 10 Conjunto A Lote 1" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent">
-                </div>
-                <div>
-                    <label for="complement" class="block text-brand-primary font-bold mb-2">Complemento (Apartamento, Casa, Bloco)</label>
-                    <input type="text" id="complement" name="complement" placeholder="Ex: Apartamento 101" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent">
-                </div>
+            <div class="relative">
+                <label for="confirm-password" class="block text-brand-primary font-bold mb-2">Confirmar Senha</label>
+                <input type="password" id="confirm-password" name="confirm-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" minlength="6" required>
+                <span id="toggle-confirm-password" class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" style="top: 32px;">
+                    <i class="fas fa-eye text-gray-500"></i>
+                </span>
             </div>
 
             <div class="pt-6">

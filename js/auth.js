@@ -1,22 +1,28 @@
-// Importa o cliente JÁ CRIADO do nosso arquivo de configuração
 import { supabase } from './supabaseClient.js';
 
-// --- SELETORES DE FORMULÁRIO ---
 const loginForm = document.getElementById('login-form');
 const signupForm = document.getElementById('signup-form');
 const errorMessageDiv = document.getElementById('error-message');
 const successMessageDiv = document.getElementById('success-message');
 
-// --- LÓGICA DE CADASTRO (SIGN UP) ---
 if (signupForm) {
-    const toggleAddress = document.getElementById('toggle-address');
-    const addressSection = document.getElementById('address-section');
-    const addressFields = addressSection.querySelectorAll('input, select');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const togglePasswordBtn = document.getElementById('toggle-password');
+    const toggleConfirmPasswordBtn = document.getElementById('toggle-confirm-password');
 
-    toggleAddress.addEventListener('change', () => {
-        const isChecked = toggleAddress.checked;
-        addressSection.classList.toggle('hidden', !isChecked);
-        addressFields.forEach(field => field.required = isChecked);
+    const togglePasswordVisibility = (input, icon) => {
+        const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+        input.setAttribute('type', type);
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    };
+
+    togglePasswordBtn.addEventListener('click', () => {
+        togglePasswordVisibility(passwordInput, togglePasswordBtn.querySelector('i'));
+    });
+    toggleConfirmPasswordBtn.addEventListener('click', () => {
+        togglePasswordVisibility(confirmPasswordInput, toggleConfirmPasswordBtn.querySelector('i'));
     });
 
     signupForm.addEventListener('submit', async (event) => {
@@ -30,54 +36,56 @@ if (signupForm) {
         if (errorMessageDiv) errorMessageDiv.textContent = '';
         if (successMessageDiv) successMessageDiv.textContent = '';
 
+        const formData = new FormData(signupForm);
+
         try {
-            const formData = new FormData(signupForm);
-            
-            // Monta o objeto de dados extras para o Supabase
-            const extraData = {
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirm-password');
+            if (password !== confirmPassword) {
+                throw new Error('As senhas não coincidem.');
+            }
+
+            let extraData = {
                 full_name: formData.get('full_name'),
                 cpf: formData.get('cpf'),
                 phone: formData.get('phone'),
-                age: formData.get('age'), // CAMPO IDADE ADICIONADO
-                address: null
+                age: formData.get('age')
             };
-            
-            if (toggleAddress.checked) {
-                extraData.address = {
-                    cep: formData.get('cep'),
-                    city: formData.get('city'),
-                    street: formData.get('street'),
-                    complement: formData.get('complement')
-                };
-            }
 
-            const { data, error } = await supabase.auth.signUp({
+            const { data: authData, error: authError } = await supabase.auth.signUp({
                 email: formData.get('email'),
                 password: formData.get('password'),
                 options: {
-                    data: extraData // Envia todos os dados extras
+                    data: extraData
                 }
             });
 
-            if (error) throw error;
-            if (data.user && data.user.identities && data.user.identities.length === 0) {
-                throw new Error("User already registered");
+            if (authError) {
+                throw authError;
             }
 
-            console.log('Cadastro bem-sucedido!', data);
+            if (!authData.user || !authData.user.id) {
+                throw new Error("Database error: CPF ou E-mail já em uso.");
+            }
+
+            console.log('Cadastro completo!', authData);
             signupForm.reset();
-            addressSection.classList.add('hidden');
             if (successMessageDiv) successMessageDiv.textContent = 'Cadastro realizado com sucesso! Verifique seu email para confirmar a conta.';
 
         } catch (error) {
             console.error('Erro no cadastro:', error.message);
-            let userMessage = 'Não foi possível realizar o cadastro. Verifique os campos e tente novamente.';
-            if (error && error.message.toLowerCase().includes('user already registered')) {
-                userMessage = 'Este email já está cadastrado. Por favor, tente fazer login.';
-            } else if (error) {
-                userMessage = `Erro: ${error.message}`;
+            let userMessage = 'Não foi possível realizar o cadastro.';
+
+            if (error.message.toLowerCase().includes('user already registered')) {
+                userMessage = 'Este E-mail já está cadastrado.';
+            } else if (error.message.toLowerCase().includes('cpf ou e-mail já em uso')) {
+                userMessage = 'Este CPF ou E-mail já está cadastrado.';
+            } else if (error.message.toLowerCase().includes('senhas não coincidem')) {
+                userMessage = 'As senhas não coincidem. Tente novamente.';
             }
+            
             if (errorMessageDiv) errorMessageDiv.textContent = userMessage;
+
         } finally {
             submitButton.disabled = false;
             submitButton.textContent = originalButtonText;
@@ -85,10 +93,7 @@ if (signupForm) {
     });
 }
 
-
-// --- LÓGICA DE LOGIN ---
 if (loginForm) {
-    // A lógica de login permanece a mesma
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const submitButton = loginForm.querySelector('button[type="submit"]');
@@ -119,7 +124,6 @@ if (loginForm) {
         }
     });
     
-    // Lógica de recuperação de senha
     const forgotPasswordLink = document.getElementById('forgot-password-link');
     const recoveryModal = document.getElementById('recovery-modal');
     const closeModalButton = document.getElementById('close-recovery-modal');
@@ -154,7 +158,7 @@ if (loginForm) {
                 recoveryMessageDiv.textContent = 'Erro ao enviar o email. Verifique o endereço digitado.';
                 recoveryMessageDiv.classList.add('text-red-600');
             } else {
-                recoveryMessageDiv.textContent = 'Link de recuperação enviado! Verifique sua caixa de entrada e spam.';
+                recoveryMessageDiv.textContent = 'Link de recuperação enviado! Verifique sua caixa deG entrada e spam.';
                 recoveryMessageDiv.classList.add('text-green-600');
             }
             submitButton.disabled = false;

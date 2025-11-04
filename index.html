@@ -29,11 +29,21 @@
             </div>
             
             <div class="hidden md:flex items-center space-x-2">
+                <a href="carrinho.html" class="relative text-2xl text-brand-primary hover:text-brand-accent p-2">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-icon-badge" class="hidden absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        0
+                    </span>
+                </a>
+                
                 <a id="login-button" href="login.html" class="bg-brand-primary text-white px-6 py-2 rounded-full hover:bg-brand-accent transition duration-300">
                     Login / Cadastre-se
                 </a>
                 <a id="profile-button" href="perfil.html" class="hidden bg-brand-secondary text-brand-primary font-bold px-6 py-2 rounded-full hover:bg-brand-accent hover:text-white transition duration-300">
                     Meu Perfil
+                </a>
+                <a id="admin-button" href="admin.html" class="hidden bg-yellow-500 text-white font-bold px-6 py-2 rounded-full hover:bg-yellow-600 transition duration-300">
+                    Painel
                 </a>
                 <button id="logout-button" class="hidden bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-300 font-semibold">
                     Sair
@@ -49,9 +59,11 @@
             <a href="#quiz" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Quiz</a>
             <a href="#sobre" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Sobre Nós</a>
             <a href="#contato" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Contato</a>
+            <a href="carrinho.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Meu Carrinho</a>
             <div id="mobile-auth-links" class="border-t border-gray-200 mt-2 pt-2">
                  <a id="mobile-login-link" href="login.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Login / Cadastre-se</a>
                  <a id="mobile-profile-link" href="perfil.html" class="hidden block py-2 px-4 text-sm hover:bg-brand-secondary">Meu Perfil</a>
+                 <a id="mobile-admin-link" href="admin.html" class="hidden block py-2 px-4 text-sm font-semibold text-yellow-600 hover:bg-yellow-100">Painel de Controle</a>
                  <a id="mobile-logout-link" href="#" class="hidden block py-2 px-4 text-sm text-red-600 hover:bg-red-100">Sair</a>
             </div>
         </div>
@@ -103,49 +115,8 @@
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-4xl font-bold text-brand-primary mb-4">Nossa Coleção de Cuidados</h2>
                 <p class="text-gray-600 max-w-xl mx-auto mb-12">Cada barra é uma experiência única, criada para nutrir seu corpo e alma.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                    <div class="sabonete-card bg-white rounded-lg shadow-lg overflow-hidden text-left">
-                        <img src="assets/images/sabonete-lavanda.jpg" alt="Sabão em barra de Lavanda Relaxante em uma base rústica" class="w-full h-56 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-2xl font-bold text-brand-primary">Lavanda Relaxante</h3>
-                                <button class="poetic-button text-2xl text-brand-accent hover:text-yellow-500 transition" title="Gerar Descrição Poética ✨">✨</button>
-                            </div>
-                            <p class="product-description text-gray-600 mb-4 h-24">Perfeito para um banho calmante antes de dormir. Alivia o estresse e acalma a pele.</p>
-                            <div class="flex justify-between items-center mt-4">
-                                <span class="text-xl font-bold text-brand-accent">R$ 22,00</span>
-                                <button class="bg-brand-primary text-white px-5 py-2 rounded-full hover:bg-brand-accent transition duration-300"><i class="fas fa-shopping-cart mr-2"></i> Adicionar</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sabonete-card bg-white rounded-lg shadow-lg overflow-hidden text-left">
-                        <img src="assets/images/sabonete-argila.jpg" alt="Sabão em barra de Argila Verde Detox com folhas ao fundo" class="w-full h-56 object-cover">
-                        <div class="p-6">
-                             <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-2xl font-bold text-brand-primary">Argila Verde Detox</h3>
-                                <button class="poetic-button text-2xl text-brand-accent hover:text-yellow-500 transition" title="Gerar Descrição Poética ✨">✨</button>
-                            </div>
-                            <p class="product-description text-gray-600 mb-4 h-24">Limpeza profunda para peles oleosas. Remove impurezas e controla a oleosidade.</p>
-                            <div class="flex justify-between items-center mt-4">
-                                <span class="text-xl font-bold text-brand-accent">R$ 24,00</span>
-                                <button class="bg-brand-primary text-white px-5 py-2 rounded-full hover:bg-brand-accent transition duration-300"><i class="fas fa-shopping-cart mr-2"></i> Adicionar</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sabonete-card bg-white rounded-lg shadow-lg overflow-hidden text-left">
-                        <img src="assets/images/sabonete-aveia.jpg" alt="Sabão em barra de Aveia e Mel com favos de mel" class="w-full h-56 object-cover">
-                        <div class="p-6">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-2xl font-bold text-brand-primary">Aveia e Mel Hidratante</h3>
-                                <button class="poetic-button text-2xl text-brand-accent hover:text-yellow-500 transition" title="Gerar Descrição Poética ✨">✨</button>
-                            </div>
-                            <p class="product-description text-gray-600 mb-4 h-24">Esfoliação suave e hidratação intensa para uma pele macia e renovada.</p>
-                            <div class="flex justify-between items-center mt-4">
-                                <span class="text-xl font-bold text-brand-accent">R$ 25,00</span>
-                                <button class="bg-brand-primary text-white px-5 py-2 rounded-full hover:bg-brand-accent transition duration-300"><i class="fas fa-shopping-cart mr-2"></i> Adicionar</button>
-                            </div>
-                        </div>
-                    </div>
+                <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="loader mx-auto col-span-3" style="border-top-color: #8B5E34;"></div>
                 </div>
             </div>
         </section>
@@ -241,6 +212,7 @@
         </div>
     </div>
 
+    <script type="module" src="js/cart.js"></script>
     <script type="module" src="js/session.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>

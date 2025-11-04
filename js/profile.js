@@ -1,18 +1,14 @@
-// Importa o cliente Supabase do nosso arquivo central
 import { supabase } from './supabaseClient.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- SELETORES GERAIS ---
     const loadingSpinner = document.getElementById('loading-spinner');
     const pageContent = document.getElementById('page-content');
     const logoutButton = document.getElementById('logout-button');
     let currentUser = null;
 
-    // --- SELETORES DE DADOS PESSOAIS ---
     const profileForm = document.getElementById('profile-form');
     const updateMessage = document.getElementById('update-message');
 
-    // --- SELETORES DE ENDEREÇO ---
     const addressListContainer = document.getElementById('address-list-container');
     const addAddressBtn = document.getElementById('add-address-btn');
     const addressModal = document.getElementById('address-modal');
@@ -20,8 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const addressForm = document.getElementById('address-form');
     const modalTitle = document.getElementById('modal-title');
     const addressErrorMessage = document.getElementById('address-error-message');
+    const citySelect = document.getElementById('city');
+    const cityOtherContainer = document.getElementById('city-other-container');
+    const cityOtherInput = document.getElementById('city_other');
 
-    // --- SELETORES DE ABAS ---
     const tabs = {
         dados: document.getElementById('tab-dados'),
         enderecos: document.getElementById('tab-enderecos'),
@@ -32,8 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         enderecos: document.getElementById('content-enderecos'),
         pedidos: document.getElementById('content-pedidos'),
     };
-
-    // --- FUNÇÕES PRINCIPAIS ---
 
     const initializePage = async () => {
         const { data: { user } } = await supabase.auth.getUser();
@@ -55,15 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadUserProfile = async () => {
         try {
-            // CORRIGIDO: Buscando todos os campos do perfil
             const { data, error } = await supabase.from('profiles').select('full_name, phone, cpf, age').eq('id', currentUser.id).single();
             if (error) throw error;
             if (data) {
                 profileForm.full_name.value = data.full_name || '';
                 profileForm.email.value = currentUser.email || '';
                 profileForm.phone.value = data.phone || '';
-                profileForm.cpf.value = data.cpf || ''; // Campo restaurado
-                profileForm.age.value = data.age || ''; // Campo restaurado
+                profileForm.cpf.value = data.cpf || '';
+                profileForm.age.value = data.age || '';
             }
         } catch (error) {
             console.error('Erro ao buscar dados do perfil:', error.message);
@@ -81,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const displayAddresses = (addresses) => {
-        addressListContainer.innerHTML = ''; // Limpa a lista
+        addressListContainer.innerHTML = '';
         if (addresses.length === 0) {
             addressListContainer.innerHTML = `<p class="text-gray-500">Nenhum endereço cadastrado ainda.</p>`;
             return;
@@ -102,18 +97,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     
-    // --- LÓGICA DO MODAL DE ENDEREÇO ---
-
+    const handleCityChange = () => {
+        if (citySelect.value === 'Outra') {
+            cityOtherContainer.classList.remove('hidden');
+            cityOtherInput.required = true;
+        } else {
+            cityOtherContainer.classList.add('hidden');
+            cityOtherInput.required = false;
+            cityOtherInput.value = '';
+        }
+    };
+    
     const openAddressModal = (address = null) => {
         addressForm.reset();
         addressErrorMessage.textContent = '';
+        cityOtherContainer.classList.add('hidden');
+        cityOtherInput.required = false;
+
         if (address) {
             modalTitle.textContent = 'Editar Endereço';
             addressForm.id.value = address.id;
             addressForm.cep.value = address.cep;
-            addressForm.city.value = address.city;
             addressForm.street.value = address.street;
             addressForm.complement.value = address.complement;
+
+            const standardOptions = Array.from(citySelect.options).map(opt => opt.value);
+            if (standardOptions.includes(address.city)) {
+                citySelect.value = address.city;
+            } else {
+                citySelect.value = 'Outra';
+                cityOtherInput.value = address.city;
+                cityOtherContainer.classList.remove('hidden');
+                cityOtherInput.required = true;
+            }
         } else {
             modalTitle.textContent = 'Adicionar Novo Endereço';
             addressForm.id.value = '';
@@ -123,13 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const closeAddressModal = () => addressModal.classList.add('hidden');
 
-    // --- MANIPULADORES DE EVENTOS (EVENT HANDLERS) ---
-
     const setupEventListeners = () => {
         profileForm.addEventListener('submit', handleProfileUpdate);
         addAddressBtn.addEventListener('click', () => openAddressModal());
         closeAddressModalBtn.addEventListener('click', closeAddressModal);
         addressForm.addEventListener('submit', handleAddressFormSubmit);
+        
+        citySelect?.addEventListener('change', handleCityChange);
         
         addressListContainer.addEventListener('click', (e) => {
             const editBtn = e.target.closest('.edit-address-btn');
@@ -166,21 +182,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const handleAddressFormSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(addressForm);
-        const addressData = Object.fromEntries(formData.entries());
-        const addressId = addressData.id;
+        const addressId = formData.get('id');
+
+        let finalCity = formData.get('city');
+        if (finalCity === 'Outra') {
+            finalCity = formData.get('city_other');
+        }
+        
+        const addressDataToSave = {
+            cep: formData.get('cep'),
+            city: finalCity,
+            street: formData.get('street'),
+            complement: formData.get('complement'),
+            user_id: currentUser.id
+        };
 
         try {
             let error;
-            if (addressId) { // Editando
-                ({ error } = await supabase.from('addresses').update({ cep: addressData.cep, city: addressData.city, street: addressData.street, complement: addressData.complement, user_id: currentUser.id }).eq('id', addressId));
-            } else { // Criando
-                ({ error } = await supabase.from('addresses').insert({ cep: addressData.cep, city: addressData.city, street: addressData.street, complement: addressData.complement, user_id: currentUser.id }));
+            if (addressId) {
+                ({ error } = await supabase.from('addresses').update(addressDataToSave).eq('id', addressId));
+            } else {
+                ({ error } = await supabase.from('addresses').insert(addressDataToSave));
             }
             if (error) throw error;
             closeAddressModal();
             await loadUserAddresses();
         } catch (err) {
-            addressErrorMessage.textContent = 'Erro ao salvar o endereço.';
+            addressErrorMessage.textContent = 'Erro ao salvar o endereço. Verifique as permissões (RLS).';
             console.error(err);
         }
     };
@@ -210,17 +238,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const setupTabs = () => {
         Object.keys(tabs).forEach(key => {
             tabs[key].addEventListener('click', () => {
-                // Desativa todas as abas e esconde todos os conteúdos
                 Object.values(tabs).forEach(t => t.className = 'py-4 px-1 border-b-2 border-transparent text-gray-500 hover:border-gray-400 hover:text-gray-700');
                 Object.values(contents).forEach(c => c.classList.add('hidden'));
 
-                // Ativa a aba clicada e mostra o conteúdo correspondente
                 tabs[key].className = 'py-4 px-1 border-b-2 font-semibold border-brand-primary text-brand-primary';
                 contents[key].classList.remove('hidden');
             });
         });
     };
 
-    // --- INICIALIZAÇÃO ---
     initializePage();
 });
