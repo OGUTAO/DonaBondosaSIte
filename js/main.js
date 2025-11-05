@@ -82,10 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!productGrid) return;
 
         try {
+            // ***** MUDANÇA AQUI: Adicionado .limit(3) *****
             const { data: products, error } = await supabase
                 .from('products')
                 .select('*')
-                .order('name');
+                .order('name')
+                .limit(3); // Mostra apenas 3 produtos na página inicial
             
             if (error) throw error;
 
@@ -133,10 +135,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         </a>
                         <div class="p-6 flex-grow flex flex-col">
                             <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-2xl font-bold text-brand-primary">${product.name}</h3>
+                                <a href="produto.html?id=${product.id}" class="block hover:underline">
+                                    <h3 class="text-2xl font-bold text-brand-primary">${product.name}</h3>
+                                </a>
                                 <button class="poetic-button text-2xl text-brand-accent hover:text-yellow-500 transition" title="Gerar Descrição Poética ✨">✨</button>
                             </div>
-                            <p class="product-description text-gray-600 mb-4 h-24">${product.description || 'Veja mais detalhes sobre este produto.'}</p>
+                            
+                            <p class="product-description text-gray-600 mb-2 break-words h-24 truncate-4-lines">${product.description || 'Veja mais detalhes sobre este produto.'}</p>
+                            
+                            <a href="produto.html?id=${product.id}" class="text-sm text-brand-primary font-semibold hover:underline mb-4">
+                                Ver mais...
+                            </a>
+                            
                             <div class="flex-grow"></div>
                             <div class="flex justify-between items-center mt-4">
                                 <div>${priceHtml}</div>

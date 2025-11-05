@@ -12,16 +12,54 @@
 
     <header class="bg-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-3xl font-bold text-brand-primary">Com Carinho (DB)</a>
-            <div class="flex items-center space-x-4">
+            <a href="index.html" class="text-3xl font-bold text-brand-primary">
+                Com Carinho
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="produtos.html" class="text-gray-600 hover:text-brand-primary transition duration-300">Produtos</a>
+                <a href="index.html#quiz" class="text-gray-600 hover:text-brand-primary transition duration-300">Quiz</a>
+                <a href="index.html#sobre" class="text-gray-600 hover:text-brand-primary transition duration-300">Sobre Nós</a>
+                <a href="index.html#contato" class="text-gray-600 hover:text-brand-primary transition duration-300">Contato</a>
+            </div>
+            
+            <div class="hidden md:flex items-center space-x-2">
                 <a href="carrinho.html" class="relative text-2xl text-brand-primary hover:text-brand-accent p-2">
                     <i class="fas fa-shopping-cart"></i>
-                    <span id="cart-icon-badge" class="hidden absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    <span id="cart-icon-badge" class="hidden absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        0
+                    </span>
                 </a>
-                <a href="index.html" class="text-gray-600 hover:text-brand-primary transition duration-300 font-semibold"><i class="fas fa-home mr-2"></i>Início</a>
-                <button id="logout-button" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-300 font-semibold">Sair</button>
+                
+                <a id="login-button" href="login.html" class="bg-brand-primary text-white px-6 py-2 rounded-full hover:bg-brand-accent transition duration-300">
+                    Login / Cadastre-se
+                </a>
+                <a id="profile-button" href="perfil.html" class="hidden bg-brand-secondary text-brand-primary font-bold px-6 py-2 rounded-full hover:bg-brand-accent hover:text-white transition duration-300">
+                    Meu Perfil
+                </a>
+                <a id="admin-button" href="admin.html" class="hidden bg-yellow-500 text-white font-bold px-6 py-2 rounded-full hover:bg-yellow-600 transition duration-300">
+                    Painel
+                </a>
+                <button id="logout-button" class="hidden bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-300 font-semibold">
+                    Sair
+                </button>
             </div>
+            <button class="md:hidden" id="mobile-menu-button">
+                <i class="fas fa-bars text-2xl text-brand-primary"></i>
+            </button>
         </nav>
+        <div class="hidden md:hidden" id="mobile-menu">
+            <a href="produtos.html" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Produtos</a>
+            <a href="index.html#quiz" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Quiz</a>
+            <a href="index.html#sobre" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Sobre Nós</a>
+            <a href="index.html#contato" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Contato</a>
+            <a href="carrinho.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Meu Carrinho</a>
+            <div id="mobile-auth-links" class="border-t border-gray-200 mt-2 pt-2">
+                 <a id="mobile-login-link" href="login.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Login / Cadastre-se</a>
+                 <a id="mobile-profile-link" href="perfil.html" class="hidden block py-2 px-4 text-sm hover:bg-brand-secondary">Meu Perfil</a>
+                 <a id="mobile-admin-link" href="admin.html" class="hidden block py-2 px-4 text-sm font-semibold text-yellow-600 hover:bg-yellow-100">Painel de Controle</a>
+                 <a id="mobile-logout-link" href="#" class="hidden block py-2 px-4 text-sm text-red-600 hover:bg-red-100">Sair</a>
+            </div>
+        </div>
     </header>
 
     <main class="container mx-auto px-6 py-12">
@@ -159,5 +197,6 @@
     <script type="module" src="js/cart.js"></script>
     <script type="module" src="js/session.js"></script>
     <script type="module" src="js/profile.js"></script>
+    <script type="module" src="js/navigation.js"></script>
 </body>
 </html>

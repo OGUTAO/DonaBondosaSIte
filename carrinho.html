@@ -16,7 +16,7 @@
                 Com Carinho
             </a>
             <div class="hidden md:flex items-center space-x-8">
-                <a href="index.html#produtos" class="text-gray-600 hover:text-brand-primary transition duration-300">Voltar para Produtos</a>
+                <a href="produtos.html" class="text-gray-600 hover:text-brand-primary transition duration-300">Produtos</a>
             </div>
             
             <div class="hidden md:flex items-center space-x-2">
@@ -44,7 +44,17 @@
                 <i class="fas fa-bars text-2xl text-brand-primary"></i>
             </button>
         </nav>
-        </header>
+        <div class="hidden md:hidden" id="mobile-menu">
+            <a href="produtos.html" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Produtos</a>
+            <a href="carrinho.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Meu Carrinho</a>
+            <div id="mobile-auth-links" class="border-t border-gray-200 mt-2 pt-2">
+                 <a id="mobile-login-link" href="login.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Login / Cadastre-se</a>
+                 <a id="mobile-profile-link" href="perfil.html" class="hidden block py-2 px-4 text-sm hover:bg-brand-secondary">Meu Perfil</a>
+                 <a id="mobile-admin-link" href="admin.html" class="hidden block py-2 px-4 text-sm font-semibold text-yellow-600 hover:bg-yellow-100">Painel de Controle</a>
+                 <a id="mobile-logout-link" href="#" class="hidden block py-2 px-4 text-sm text-red-600 hover:bg-red-100">Sair</a>
+            </div>
+        </div>
+    </header>
 
     <main class="container mx-auto px-6 py-12">
         <h1 class="text-4xl font-bold text-brand-primary mb-8">Meu Carrinho</h1>
@@ -84,7 +94,7 @@
             
             <div id="empty-cart-message" class="hidden lg:col-span-3 text-center py-10 bg-white rounded-lg shadow-lg">
                 <h2 class="text-2xl text-gray-700">Seu carrinho está vazio.</h2>
-                <a href="index.html#produtos" class="mt-6 inline-block bg-brand-primary text-white font-bold px-8 py-2 rounded-full text-lg hover:bg-brand-accent transition duration-300">
+                <a href="produtos.html" class="mt-6 inline-block bg-brand-primary text-white font-bold px-8 py-2 rounded-full text-lg hover:bg-brand-accent transition duration-300">
                     Ver produtos
                 </a>
             </div>
@@ -101,7 +111,7 @@
                 </div>
                 <div>
                     <h4 class="font-bold text-lg mb-3">Links Rápidos</h4>
-                    <ul><li class="mb-2"><a href="index.html#produtos" class="hover:underline text-brand-secondary">Produtos</a></li><li class="mb-2"><a href="index.html#sobre" class="hover:underline text-brand-secondary">Sobre Nós</a></li><li><a href="#" class="hover:underline text-brand-secondary">FAQ</a></li></ul>
+                    <ul><li class="mb-2"><a href="produtos.html" class="hover:underline text-brand-secondary">Produtos</a></li><li class="mb-2"><a href="index.html#sobre" class="hover:underline text-brand-secondary">Sobre Nós</a></li><li><a href="#" class="hover:underline text-brand-secondary">FAQ</a></li></ul>
                 </div>
                 <div>
                     <h4 class="font-bold text-lg mb-3">Siga-nos</h4>
@@ -119,6 +129,7 @@
     <script type="module" src="js/cart.js"></script>
     <script type="module" src="js/session.js"></script>
     <script type="module" src="js/carrinho.js"></script>
+    <script type="module" src="js/navigation.js"></script>
 
 </body>
 </html>

@@ -127,7 +127,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span class="text-sm text-gray-500">${date}</span>
                     </div>
                     <p class="text-yellow-500 my-2">${stars}</p>
-                    <p class="text-gray-600 mt-2">${review.comment}</p>
+                    
+                    <p class="text-gray-600 mt-2 break-words">${review.comment}</p>
+                    
                 </div>
             `;
             reviewList.insertAdjacentHTML('beforeend', reviewElement);
@@ -182,7 +184,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Erro ao salvar sua avaliação. Tente novamente.');
         }
     }
-
 
     const productId = getProductId();
     if (productId) {
