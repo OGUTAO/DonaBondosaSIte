@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Descubra os sabões artesanais da Com Carinho, feitos com ingredientes 100% naturais para um cuidado que transforma sua pele.">
+    <meta name="description" content="Descubra os sabonetes artesanais da Com Carinho, feitos com ingredientes 100% naturais para um cuidado que transforma sua pele.">
     <meta name="keywords" content="sabonete artesanal, sabão em barra, produtos naturais, cuidado com a pele, Com Carinho">
-    <title>Com Carinho - Sabões Artesanais</title>
+    <title>Com Carinho - Sabonetes Artesanais</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,6 @@
             </a>
             <div class="hidden md:flex items-center space-x-8">
                 <a href="#produtos" class="text-gray-600 hover:text-brand-primary transition duration-300">Produtos</a>
-                <a href="#quiz" class="text-gray-600 hover:text-brand-primary transition duration-300">Quiz</a>
                 <a href="#sobre" class="text-gray-600 hover:text-brand-primary transition duration-300">Sobre Nós</a>
                 <a href="#contato" class="text-gray-600 hover:text-brand-primary transition duration-300">Contato</a>
             </div>
@@ -56,7 +55,6 @@
         </nav>
         <div class="hidden md:hidden" id="mobile-menu">
             <a href="#produtos" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Produtos</a>
-            <a href="#quiz" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Quiz</a>
             <a href="#sobre" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Sobre Nós</a>
             <a href="#contato" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Contato</a>
             <a href="carrinho.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Meu Carrinho</a>
@@ -75,39 +73,10 @@
             <img src="img/imgpagprincipal.png" alt="Bancada de madeira com sabonetes artesanais e ingredientes naturais como flores de lavanda e mel" class="w-full h-full object-cover">
             <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
                 <h1 class="text-5xl md:text-7xl font-bold mb-4 leading-tight">Sinta o Cuidado que Transforma</h1>
-                <p class="text-lg md:text-xl max-w-2xl mb-8">Sabões em barra artesanais, feitos com ingredientes naturais para uma pele radiante e saudável.</p>
+                <p class="text-lg md:text-xl max-w-2xl mb-8">Sabonetes em barra artesanais, feitos com ingredientes naturais para uma pele radiante e saudável.</p>
                 <a href="produtos.html" class="bg-white text-brand-primary font-bold px-10 py-3 rounded-full text-lg hover:bg-brand-secondary transition duration-300">
                     Descubra Nossos Produtos
                 </a>
-            </div>
-        </section>
-
-        <section id="quiz" class="py-16 md:py-24 bg-white">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-4xl font-bold text-brand-primary mb-4">✨ Descubra seu Sabonete Ideal</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mb-8">Não tem certeza por onde começar? Responda duas perguntas e deixe nossa IA encontrar o sabonete perfeito para você.</p>
-                <form id="quiz-form" class="max-w-xl mx-auto bg-brand-secondary p-8 rounded-lg shadow-lg">
-                    <div class="mb-6 text-left">
-                        <label class="font-bold text-lg text-brand-primary mb-2 block">1. Qual é o seu tipo de pele?</label>
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <label class="flex-1"><input type="radio" name="skin_type" value="oleosa" class="mr-2" required>Oleosa</label>
-                            <label class="flex-1"><input type="radio" name="skin_type" value="seca" class="mr-2">Seca</label>
-                            <label class="flex-1"><input type="radio" name="skin_type" value="sensível" class="mr-2">Sensível</label>
-                            <label class="flex-1"><input type="radio" name="skin_type" value="normal" class="mr-2">Normal</label>
-                        </div>
-                    </div>
-                    <div class="mb-8 text-left">
-                        <label class="font-bold text-lg text-brand-primary mb-2 block">2. Qual sensação você busca no banho?</label>
-                        <div class="flex flex-col sm:flex-row gap-4">
-                           <label class="flex-1"><input type="radio" name="sensation" value="relaxamento" class="mr-2" required>Relaxamento</label>
-                           <label class="flex-1"><input type="radio" name="sensation" value="limpeza profunda" class="mr-2">Limpeza Profunda</label>
-                           <label class="flex-1"><input type="radio" name="sensation" value="hidratação" class="mr-2">Hidratação Intensa</label>
-                        </div>
-                    </div>
-                    <button type="submit" class="bg-brand-primary text-white font-bold px-10 py-3 rounded-full text-lg hover:bg-brand-accent transition duration-300">
-                        Encontrar meu sabonete
-                    </button>
-                </form>
             </div>
         </section>
 
@@ -123,6 +92,16 @@
                     <a href="produtos.html" class="bg-brand-primary text-white font-bold px-10 py-3 rounded-full text-lg hover:bg-brand-accent transition duration-300">
                         Ver mais produtos
                     </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="ofertas" class="py-16 md:py-24 bg-brand-secondary">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-brand-primary mb-4">Nossas Ofertas</h2>
+                <p class="text-gray-600 max-w-xl mx-auto mb-12">Produtos especiais com preços reduzidos por tempo limitado.</p>
+                <div id="offer-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="loader mx-auto col-span-3" style="border-top-color: #8B5E34;"></div>
                 </div>
             </div>
         </section>
@@ -179,12 +158,28 @@
 
     </main>
 
+    <div id="login-prompt-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-[999]">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-lg w-full text-center relative">
+            <button id="close-login-prompt" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+            <h3 class="text-3xl font-bold text-brand-primary mb-4">Você precisa estar logado!</h3>
+            <p class="text-gray-700 leading-relaxed mb-8">Para adicionar produtos ao carrinho, você precisa fazer o login ou criar uma conta.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="login.html" class="w-full sm:w-auto bg-brand-primary text-white font-bold px-8 py-3 rounded-full text-lg hover:bg-brand-accent transition duration-300">
+                    Fazer Login
+                </a>
+                <a href="cadastro.html" class="w-full sm:w-auto bg-brand-secondary text-brand-primary font-bold px-8 py-3 rounded-full text-lg hover:bg-brand-accent hover:text-white transition duration-300">
+                    Criar Conta
+                </a>
+            </div>
+        </div>
+    </div>
+
     <footer id="contato" class="bg-brand-primary text-white">
         <div class="container mx-auto px-6 py-12">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
                 <div>
                     <h3 class="text-2xl font-bold mb-2">Com Carinho</h3>
-                    <p class="text-brand-secondary">Cuidado artesanal para sua pele.</p>
+                    <p class="text-brand-secondary">O aroma do cuidado, a leveza de um toque.💖 Sabonetes artesanais "Com Carinho" para você! 🛍️ Compre o seu e sinta a diferença!</p>
                 </div>
                 <div>
                     <h4 class="font-bold text-lg mb-3">Links Rápidos</h4>
@@ -192,22 +187,16 @@
                 </div>
                 <div>
                     <h4 class="font-bold text-lg mb-3">Siga-nos</h4>
-                    <div class="flex justify-center md:justify-start space-x-4"><a href="#" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-instagram"></i></a><a href="#" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-facebook-square"></i></a><a href="#" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-whatsapp"></i></a></div>
+                    <div class="flex justify-center md:justify-start space-x-4"><a href="https://www.instagram.com/comcarinhosabonetes/" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-instagram"></i></a><a href="#" class="text-brand-secondary hover:text-white text-2xl"><i class="fab fa-whatsapp"></i></a></div>
                     <p class="text-brand-secondary mt-4">contato@comcarinho.com.br</p>
                     </div>
             </div>
             <div class="border-t border-brand-accent mt-10 pt-6 text-center text-brand-secondary text-sm">
                 <p>&copy; 2025 Com Carinho. Todos os direitos reservados.</p>
+                <p>Developed by ByteBrosTI</p>
                 </div>
         </div>
     </footer>
-
-    <div id="result-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-lg w-full text-center relative">
-            <button id="close-modal" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800">&times;</button>
-            <div id="modal-content"></div>
-        </div>
-    </div>
 
     <script type="module" src="js/cart.js"></script>
     <script type="module" src="js/session.js"></script>

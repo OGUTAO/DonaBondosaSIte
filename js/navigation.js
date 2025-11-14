@@ -1,6 +1,20 @@
 // js/navigation.js
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    // --- LÓGICA DO MENU HAMBÚRGUER (ADICIONADA AQUI) ---
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+    // --- FIM DA LÓGICA DO MENU ---
+
+
+    // --- Lógica de navegação existente ---
     const activeClasses = ['text-brand-primary', 'font-bold'];
     const inactiveClasses = ['text-gray-600', 'hover:text-brand-primary'];
     
@@ -43,9 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sections.length === 0) return;
 
         // --- CORREÇÃO DA ÁREA DE DETECÇÃO ---
-        // rootMargin: '-30% 0px -70% 0px'
-        // Isso cria uma "linha" 30% abaixo do topo da tela,
-        // dando mais espaço para o footer ser detectado.
         const observerOptions = {
             root: null,
             rootMargin: '-75% 0px -25% 0px',

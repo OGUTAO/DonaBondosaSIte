@@ -190,8 +190,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadProductData(productId);
         checkUserForReview();
         
+        // --- ATUALIZADO: Listener de clique com verificação de login ---
         addToCartBtn.addEventListener('click', () => {
-            addToCart(currentProductId, 1);
+            const userId = localStorage.getItem('currentUserId');
+            if (!userId) {
+                // Se não estiver logado, mostra o pop-up
+                document.getElementById('login-prompt-modal')?.classList.remove('hidden');
+            } else {
+                // Se estiver logado, adiciona ao carrinho
+                addToCart(currentProductId, 1);
+            }
         });
 
         reviewForm.addEventListener('submit', handleReviewSubmit);

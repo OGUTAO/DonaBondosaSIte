@@ -47,11 +47,15 @@ const handleLogout = async () => {
         console.error('Erro ao fazer logout:', error);
     }
     localStorage.removeItem('userRole'); 
+    localStorage.removeItem('currentUserId'); // --- ADICIONADO ---
     window.location.href = 'index.html';
 };
 
 const checkUserSession = async (user) => {
     if (user) {
+        // --- ADICIONADO ---
+        localStorage.setItem('currentUserId', user.id); // Salva o ID do usuário
+        
         const { data: profile, error } = await supabase
             .from('profiles')
             .select('role')
@@ -61,6 +65,7 @@ const checkUserSession = async (user) => {
         if (error) {
             console.error('Erro ao buscar perfil do usuário:', error.message);
             localStorage.removeItem('userRole');
+            localStorage.removeItem('currentUserId'); // --- ADICIONADO ---
             updateUserUI(null, null);
         } else if (profile) {
             localStorage.setItem('userRole', profile.role);
@@ -68,10 +73,13 @@ const checkUserSession = async (user) => {
         } else {
             console.warn('Sessão encontrada, mas perfil não existe na tabela "profiles".');
             localStorage.removeItem('userRole');
+            localStorage.removeItem('currentUserId'); // --- ADICIONADO ---
             updateUserUI(null, null);
         }
     } else {
+        // --- ADICIONADO ---
         localStorage.removeItem('userRole');
+        localStorage.removeItem('currentUserId'); // Limpa o ID do usuário
         updateUserUI(null, null);
     }
 };
@@ -92,5 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileLogoutLink?.addEventListener('click', (e) => {
         e.preventDefault(); 
         handleLogout();
+    });
+
+    // --- ADICIONADO: Lógica para fechar o pop-up de login ---
+    const loginPromptModal = document.getElementById('login-prompt-modal');
+    const closeLoginPromptBtn = document.getElementById('close-login-prompt');
+    closeLoginPromptBtn?.addEventListener('click', () => {
+        loginPromptModal?.classList.add('hidden');
     });
 });
