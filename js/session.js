@@ -1,6 +1,10 @@
 import { supabase } from './supabaseClient.js';
 import { updateCartIcon } from './cart.js';
 
+// Pega os novos elementos do nome
+const userNameDisplay = document.getElementById('user-name-display');
+const mobileUserNameDisplay = document.getElementById('mobile-user-name-display');
+
 const loginButton = document.getElementById('login-button');
 const profileButton = document.getElementById('profile-button');
 const logoutButton = document.getElementById('logout-button');
@@ -13,6 +17,17 @@ const mobileAdminLink = document.getElementById('mobile-admin-link');
 
 const updateUserUI = (user, profile) => {
     if (user && profile) {
+        // Mostra o nome do usuário (apenas o primeiro nome)
+        const firstName = profile.full_name.split(' ')[0];
+        if (userNameDisplay) {
+            userNameDisplay.textContent = `Olá, ${firstName}`;
+            userNameDisplay.classList.remove('hidden');
+        }
+        if (mobileUserNameDisplay) {
+            mobileUserNameDisplay.textContent = `Olá, ${firstName}`;
+            mobileUserNameDisplay.classList.remove('hidden');
+        }
+
         loginButton?.classList.add('hidden');
         profileButton?.classList.remove('hidden');
         logoutButton?.classList.remove('hidden');
@@ -29,6 +44,16 @@ const updateUserUI = (user, profile) => {
             mobileAdminLink?.classList.add('hidden');
         }
     } else {
+        // Esconde o nome do usuário
+        if (userNameDisplay) {
+            userNameDisplay.textContent = '';
+            userNameDisplay.classList.add('hidden');
+        }
+        if (mobileUserNameDisplay) {
+            mobileUserNameDisplay.textContent = '';
+            mobileUserNameDisplay.classList.add('hidden');
+        }
+        
         loginButton?.classList.remove('hidden');
         profileButton?.classList.add('hidden');
         logoutButton?.classList.add('hidden');
@@ -47,39 +72,38 @@ const handleLogout = async () => {
         console.error('Erro ao fazer logout:', error);
     }
     localStorage.removeItem('userRole'); 
-    localStorage.removeItem('currentUserId'); // --- ADICIONADO ---
+    localStorage.removeItem('currentUserId');
     window.location.href = 'index.html';
 };
 
 const checkUserSession = async (user) => {
     if (user) {
-        // --- ADICIONADO ---
-        localStorage.setItem('currentUserId', user.id); // Salva o ID do usuário
+        localStorage.setItem('currentUserId', user.id); 
         
+        // Busca o 'full_name' além da 'role'
         const { data: profile, error } = await supabase
             .from('profiles')
-            .select('role')
+            .select('role, full_name') 
             .eq('id', user.id)
             .single();
 
         if (error) {
             console.error('Erro ao buscar perfil do usuário:', error.message);
             localStorage.removeItem('userRole');
-            localStorage.removeItem('currentUserId'); // --- ADICIONADO ---
+            localStorage.removeItem('currentUserId');
             updateUserUI(null, null);
         } else if (profile) {
             localStorage.setItem('userRole', profile.role);
-            updateUserUI(user, profile);
+            updateUserUI(user, profile); // Passa o perfil completo
         } else {
             console.warn('Sessão encontrada, mas perfil não existe na tabela "profiles".');
             localStorage.removeItem('userRole');
-            localStorage.removeItem('currentUserId'); // --- ADICIONADO ---
+            localStorage.removeItem('currentUserId');
             updateUserUI(null, null);
         }
     } else {
-        // --- ADICIONADO ---
         localStorage.removeItem('userRole');
-        localStorage.removeItem('currentUserId'); // Limpa o ID do usuário
+        localStorage.removeItem('currentUserId');
         updateUserUI(null, null);
     }
 };
@@ -102,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         handleLogout();
     });
 
-    // --- ADICIONADO: Lógica para fechar o pop-up de login ---
     const loginPromptModal = document.getElementById('login-prompt-modal');
     const closeLoginPromptBtn = document.getElementById('close-login-prompt');
     closeLoginPromptBtn?.addEventListener('click', () => {

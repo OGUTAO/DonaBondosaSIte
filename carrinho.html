@@ -23,6 +23,7 @@
             </div>
             
             <div class="hidden md:flex items-center space-x-2">
+                <span id="user-name-display" class="hidden text-gray-700 font-semibold mr-2"></span>
                 <a href="carrinho.html" class="relative text-2xl text-brand-primary hover:text-brand-accent p-2">
                     <i class="fas fa-shopping-cart"></i>
                     <span id="cart-icon-badge" class="hidden absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -54,6 +55,7 @@
             <a href="index.html#contato" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Contato</a>
             <a href="carrinho.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Meu Carrinho</a>
             <div id="mobile-auth-links" class="border-t border-gray-200 mt-2 pt-2">
+                <span id="mobile-user-name-display" class="hidden block py-2 px-4 text-sm font-bold text-brand-primary"></span>
                  <a id="mobile-login-link" href="login.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Login / Cadastre-se</a>
                  <a id="mobile-profile-link" href="perfil.html" class="hidden block py-2 px-4 text-sm hover:bg-brand-secondary">Meu Perfil</a>
                  <a id="mobile-admin-link" href="admin.html" class="hidden block py-2 px-4 text-sm font-semibold text-yellow-600 hover:bg-yellow-100">Painel de Controle</a>
@@ -94,7 +96,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="md:col-span-1">
                                 <label for="cep" class="block text-brand-primary font-bold mb-2">CEP</label>
-                                <input type="text" id="cep" name="cep" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                                <input type="text" id="cep" name="cep" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" maxlength="50">
                             </div>
                             <div class="md:col-span-2">
                                 <label for="city" class="block text-brand-primary font-bold mb-2">Cidade (RA)</label>
@@ -119,15 +121,15 @@
                         </div>
                         <div id="city-other-container" class="hidden">
                             <label for="city_other" class="block text-brand-primary font-bold mb-2">Especifique a Cidade (RA)</label>
-                            <input type="text" id="city_other" name="city_other" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                            <input type="text" id="city_other" name="city_other" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" maxlength="50">
                         </div>
                         <div>
                             <label for="street" class="block text-brand-primary font-bold mb-2">Endereço (Rua, Quadra, Nº)</label>
-                            <input type="text" id="street" name="street" class="w-full px-3 py-2 border rounded-lg">
+                            <input type="text" id="street" name="street" class="w-full px-3 py-2 border rounded-lg" maxlength="50">
                         </div>
                         <div>
                             <label for="complement" class="block text-brand-primary font-bold mb-2">Complemento (Apto, Casa)</label>
-                            <input type="text" id="complement" name="complement" class="w-full px-3 py-2 border rounded-lg">
+                            <input type="text" id="complement" name="complement" class="w-full px-3 py-2 border rounded-lg" maxlength="50">
                         </div>
                     </div>
                     

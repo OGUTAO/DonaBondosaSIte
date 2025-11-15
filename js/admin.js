@@ -16,10 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadImageBtn = document.getElementById('upload-image-btn');
     const uploadStatus = document.getElementById('upload-status');
     
-    // --- FUNÇÃO DE CARREGAR PRODUTOS ATUALIZADA ---
+    // --- NOVOS ELEMENTOS DO MODAL ---
+    const deleteModal = document.getElementById('delete-product-modal');
+    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+
+    
     const loadProducts = async (searchTerm = '') => {
         
-        // --- MUDANÇA 1: Query atualizada para buscar os nomes dos perfis (JOIN) ---
         let query = supabase
             .from('products')
             .select(`
@@ -38,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (error) {
             productListContainer.innerHTML = '<p class="text-red-500">Erro ao carregar produtos.</p>';
-            console.error(error); // Mostra o erro no console
+            console.error(error); 
             return;
         }
 
@@ -49,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         productListContainer.innerHTML = products.map(product => {
             
-            // --- MUDANÇA 2: Pega os nomes, com 'N/A' se não existir ---
             const createdName = product.created_by_profile ? product.created_by_profile.full_name : 'N/A';
             const updatedName = product.updated_by_profile ? product.updated_by_profile.full_name : 'N/A';
 
@@ -69,9 +72,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         Última att: <strong>${updatedName}</strong>
                     </p>
                 </div>
-                <div class="space-x-2">
+                
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                     <button class="edit-product-btn text-blue-600 hover:text-blue-800" data-id="${product.id}">
                         <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="delete-product-btn text-red-600 hover:text-red-800" data-id="${product.id}">
+                        <i class="fas fa-trash"></i> Excluir
                     </button>
                 </div>
             </div>
@@ -211,11 +218,58 @@ document.addEventListener('DOMContentLoaded', () => {
         clearFormBtn.classList.remove('hidden');
     };
 
-    // --- FUNÇÃO DE SUBMIT ATUALIZADA ---
+    // --- FUNÇÃO PARA DELETAR O PRODUTO (confirm() REMOVIDO) ---
+    const handleDeleteProduct = async (productId) => {
+        // O pop-up de confirmação agora é o modal!
+        
+        try {
+            if (productIdInput.value === productId) {
+                resetProductForm();
+            }
+
+            // 1. Achar todas as imagens do produto no Storage
+            const { data: images, error: imgError } = await supabase
+                .from('product_images')
+                .select('image_url')
+                .eq('product_id', productId);
+            
+            if (imgError) throw imgError;
+
+            // 2. Deletar as imagens do Storage (se houver)
+            if (images && images.length > 0) {
+                const filePaths = images.map(img => img.image_url.split('/product-images/')[1]);
+                const { error: storageError } = await supabase.storage
+                    .from('product-images')
+                    .remove(filePaths);
+                if (storageError) {
+                    console.warn("Erro ao deletar arquivos do storage (continuando):", storageError);
+                }
+            }
+
+            // 3. Deletar o produto da tabela 'products'
+            const { error: productError } = await supabase
+                .from('products')
+                .delete()
+                .eq('id', productId);
+            
+            if (productError) throw productError;
+
+            // 4. Sucesso
+            productMessage.textContent = 'Produto excluído com sucesso!';
+            productMessage.className = 'mt-4 text-center font-semibold text-green-600';
+            loadProducts(searchInput.value); // Recarrega a lista
+
+        } catch (error) {
+            console.error('Erro ao excluir produto:', error);
+            productMessage.textContent = `Erro ao excluir produto: ${error.message}`;
+            productMessage.className = 'mt-4 text-center font-semibold text-red-600';
+        }
+    };
+
+
     productForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // --- MUDANÇA 4: Pega o ID do usuário logado ---
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) {
             productMessage.textContent = 'Erro: Não foi possível identificar o usuário. Faça login novamente.';
@@ -237,8 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             if (productId) {
-                // --- MODO DE ATUALIZAÇÃO ---
-                // --- MUDANÇA 5: Adiciona o 'updated_by' ---
+                // MODO DE ATUALIZAÇÃO
                 productData.updated_by = currentUserId;
 
                 const { data: existingProduct, error: fetchError } = await supabase
@@ -265,10 +318,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 resetProductForm();
 
             } else {
-                // --- MODO DE CRIAÇÃO ---
+                // MODO DE CRIAÇÃO
                 productData.current_price = newPrice;
-                
-                // --- MUDANÇA 6: Adiciona 'created_by' e 'updated_by' ---
                 productData.created_by = currentUserId;
                 productData.updated_by = currentUserId;
 
@@ -304,12 +355,24 @@ document.addEventListener('DOMContentLoaded', () => {
     clearFormBtn.addEventListener('click', resetProductForm);
     cancelEditBtn.addEventListener('click', resetProductForm);
 
+    // --- LISTENER ATUALIZADO para chamar o MODAL ---
     productListContainer.addEventListener('click', (e) => {
         const editBtn = e.target.closest('.edit-product-btn');
+        const deleteBtn = e.target.closest('.delete-product-btn'); 
+        
         if (editBtn) {
             productMessage.textContent = ''; 
             const id = editBtn.dataset.id;
             fillFormForEdit(id);
+            return;
+        }
+
+        if (deleteBtn) { 
+            const id = deleteBtn.dataset.id;
+            // Salva o ID no modal e mostra o modal
+            deleteModal.dataset.productId = id;
+            deleteModal.classList.remove('hidden');
+            return;
         }
     });
 
@@ -326,6 +389,22 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', () => {
         loadProducts(searchInput.value);
     });
+
+    // --- NOVOS LISTENERS PARA O MODAL ---
+    cancelDeleteBtn.addEventListener('click', () => {
+        deleteModal.classList.add('hidden');
+        deleteModal.dataset.productId = ''; // Limpa o ID
+    });
+
+    confirmDeleteBtn.addEventListener('click', () => {
+        const id = deleteModal.dataset.productId;
+        if (id) {
+            handleDeleteProduct(id);
+        }
+        deleteModal.classList.add('hidden'); // Esconde o modal
+        deleteModal.dataset.productId = ''; // Limpa o ID
+    });
+
 
     loadProducts(); 
     resetProductForm(); 
