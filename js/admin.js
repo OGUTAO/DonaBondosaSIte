@@ -28,10 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
     const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 
-    // --- ELEMENTOS DE PEDIDOS E MODAL DE DETALHES ---
+    // --- ELEMENTOS DE PEDIDOS ---
     const ordersListBody = document.getElementById('orders-list-body');
     const ordersLoading = document.getElementById('orders-loading');
+    
+    // Novos Filtros
+    const filterSearch = document.getElementById('search-orders');
     const filterStatus = document.getElementById('filter-status');
+    const filterDate = document.getElementById('filter-date');
+    const clearFiltersBtn = document.getElementById('clear-filters-btn');
     
     const orderDetailsModal = document.getElementById('order-details-modal');
     const modalOrderId = document.getElementById('modal-order-id');
@@ -39,9 +44,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeDetailsBtn = document.getElementById('close-details-btn');
     const closeDetailsBtnAction = document.getElementById('close-details-btn-action');
 
-    // Armazena os pedidos carregados para acesso rápido no modal
-    let currentOrders = [];
+    // --- VARIÁVEIS GLOBAIS DE DADOS ---
+    let allLoadedOrders = []; 
+    let currentOrders = [];   
 
+    // --- FUNÇÃO DE FORMATAÇÃO DE ID ---
+    const formatOrderId = (order) => {
+        if (!order.created_at || !order.sequence_number) return `#${order.id}`;
+        const date = new Date(order.created_at);
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        return `#${order.sequence_number}${month}${year}`;
+    };
 
     // --- LÓGICA DE ABAS ---
     const switchTab = (tabName) => {
@@ -64,8 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tabProdutos.classList.remove('border-brand-primary', 'text-brand-primary', 'font-bold');
             tabProdutos.classList.add('border-transparent', 'text-gray-500');
             
-            // Carrega os pedidos ao entrar na aba
-            loadOrders();
+            loadOrders(); 
         }
     };
 
@@ -96,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (error) {
             productListContainer.innerHTML = '<p class="text-red-500">Erro ao carregar produtos.</p>';
-            console.error(error); 
             return;
         }
 
@@ -146,22 +158,31 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadStatus.textContent = 'Enviando imagem...';
         try {
             const fileName = `${productId}/${Date.now()}-${file.name}`;
+            
+            // UPLOAD: Usa o Bucket (com traço)
             const { error: uploadError } = await supabase.storage
-                .from('product-images')
+                .from('product-images') 
                 .upload(fileName, file);
+            
             if (uploadError) throw uploadError;
+
             const { data: publicUrlData } = supabase.storage
                 .from('product-images')
                 .getPublicUrl(fileName);
+            
             const publicUrl = publicUrlData.publicUrl;
+
+            // LINK NO BANCO: Usa a Tabela (com underline) - AQUI ESTAVA O ERRO
             const { error: dbError } = await supabase
-                .from('product-images')
+                .from('product_images') // <--- CORRIGIDO
                 .insert({
                     product_id: productId,
                     image_url: publicUrl,
                     alt_text: productName
                 });
+            
             if (dbError) throw dbError;
+
             uploadStatus.textContent = 'Upload completo!';
             imageUploadInput.value = ''; 
             await loadProductImages(productId); 
@@ -177,10 +198,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadProductImages = async (productId) => {
         imageList.innerHTML = '';
+        
+        // BUSCA NO BANCO: Usa a Tabela (com underline) - AQUI ESTAVA O ERRO
         const { data: images, error } = await supabase
-            .from('product_images')
+            .from('product_images') // <--- CORRIGIDO
             .select('*')
             .eq('product_id', productId);
+            
         if (error) {
             console.error('Erro ao carregar imagens:', error);
             return;
@@ -213,15 +237,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const handleImageDelete = async (imageId, imageUrl) => {
         if (!confirm('Tem certeza que quer apagar esta imagem?')) return;
         try {
+            // DELETAR DO BANCO: Usa a Tabela (com underline) - CORRIGIDO
             const { error: dbError } = await supabase
-                .from('product_images')
+                .from('product_images') // <--- CORRIGIDO
                 .delete()
                 .eq('id', imageId);
+            
             if (dbError) throw dbError;
+
             const fileName = imageUrl.split('/product-images/')[1];
+            
+            // DELETAR DO STORAGE: Usa o Bucket (com traço)
             const { error: storageError } = await supabase.storage
-                .from('product-images')
+                .from('product-images') 
                 .remove([fileName]);
+            
             if (storageError) console.warn("Erro ao apagar do storage:", storageError.message);
             await loadProductImages(productIdInput.value);
         } catch (error) {
@@ -272,13 +302,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const handleDeleteProduct = async (productId) => {
         try {
             if (productIdInput.value === productId) resetProductForm();
+            
+            // BUSCA NO BANCO: Usa a Tabela (com underline) - CORRIGIDO
             const { data: images, error: imgError } = await supabase
-                .from('product_images')
+                .from('product_images') // <--- CORRIGIDO
                 .select('image_url')
                 .eq('product_id', productId);
+            
             if (imgError) throw imgError;
+            
             if (images && images.length > 0) {
                 const filePaths = images.map(img => img.image_url.split('/product-images/')[1]);
+                
+                // REMOVE DO STORAGE: Usa o Bucket (com traço)
                 await supabase.storage.from('product-images').remove(filePaths);
             }
             const { error: productError } = await supabase
@@ -414,15 +450,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // LÓGICA DE PEDIDOS (COM DETALHES)
+    // LÓGICA DE PEDIDOS
     // ==========================================
 
-    // --- FUNÇÃO PARA PREENCHER E ABRIR O MODAL DE DETALHES ---
     const openOrderDetails = (orderId) => {
         const order = currentOrders.find(o => o.id == orderId);
         if (!order) return;
 
-        modalOrderId.textContent = `#${order.id}`;
+        modalOrderId.textContent = formatOrderId(order);
         modalItemsList.innerHTML = '';
 
         order.order_items.forEach(item => {
@@ -442,7 +477,6 @@ document.addEventListener('DOMContentLoaded', () => {
             modalItemsList.insertAdjacentHTML('beforeend', itemHtml);
         });
 
-        // Adiciona resumo do total
         const totalHtml = `
              <div class="mt-4 pt-4 border-t border-gray-300 flex justify-between items-center">
                 <span class="font-bold text-xl">Total do Pedido</span>
@@ -454,7 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
         orderDetailsModal.classList.remove('hidden');
     };
 
-    // Fecha o modal
     const closeOrderDetails = () => {
         orderDetailsModal.classList.add('hidden');
     };
@@ -462,12 +495,12 @@ document.addEventListener('DOMContentLoaded', () => {
     closeDetailsBtnAction.addEventListener('click', closeOrderDetails);
 
 
+    // Função para carregar pedidos do banco
     const loadOrders = async () => {
         if (!ordersListBody) return;
         
         ordersLoading.classList.remove('hidden');
-        ordersListBody.innerHTML = '';
-
+        
         let query = supabase
             .from('orders')
             .select(`
@@ -482,15 +515,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `)
             .order('created_at', { ascending: false });
 
-        if (filterStatus && filterStatus.value !== 'all') {
-            query = query.eq('status', filterStatus.value);
-        }
-
         const { data: orders, error } = await query;
         
-        // Armazena em memória
-        currentOrders = orders || [];
-
         ordersLoading.classList.add('hidden');
 
         if (error) {
@@ -499,17 +525,30 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (orders.length === 0) {
+        // Salva tudo em memória
+        allLoadedOrders = orders || [];
+        
+        // Aplica os filtros iniciais
+        applyFilters();
+    };
+
+    // Função para desenhar a tabela
+    const renderOrdersTable = (ordersToRender) => {
+        ordersListBody.innerHTML = '';
+        
+        currentOrders = ordersToRender;
+
+        if (ordersToRender.length === 0) {
             ordersListBody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">Nenhum pedido encontrado.</td></tr>';
             return;
         }
 
-        orders.forEach(order => {
-            // Cria resumo curto
+        ordersToRender.forEach(order => {
             const itemsSummary = order.order_items.map(i => `${i.quantity}x ${i.products?.name || 'Item removido'}`).join(', ');
             const updatedBy = order.admin_profile ? `<br><span class="text-xs text-gray-500">Att por: ${order.admin_profile.full_name}</span>` : '';
 
             let statusColor = 'bg-gray-200 text-gray-800';
+            if (order.status === 'Pendente') statusColor = 'bg-gray-300 text-gray-700'; // ADICIONADO
             if (order.status === 'Em Análise') statusColor = 'bg-yellow-200 text-yellow-800';
             if (order.status === 'Em Produção') statusColor = 'bg-blue-200 text-blue-800';
             if (order.status === 'A Caminho') statusColor = 'bg-purple-200 text-purple-800';
@@ -519,8 +558,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = `
                 <tr class="border-b border-gray-200 hover:bg-gray-50">
                     <td class="px-5 py-5 text-sm">
-                        <p class="text-gray-900 whitespace-no-wrap font-bold">#${order.id}</p>
-                        <p class="text-gray-600 whitespace-no-wrap">${order.profiles?.full_name || 'Desconhecido'}</p>
+                        <p class="text-gray-900 whitespace-no-wrap font-bold text-lg">${formatOrderId(order)}</p>
+                        <p class="text-gray-600 whitespace-no-wrap mt-1">${order.profiles?.full_name || 'Desconhecido'}</p>
                         <p class="text-gray-500 text-xs">${order.profiles?.email || ''}</p>
                     </td>
                     <td class="px-5 py-5 text-sm">
@@ -544,7 +583,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td class="px-5 py-5 text-sm">
                         <select class="status-change-select p-2 border rounded bg-white cursor-pointer focus:ring-2 focus:ring-brand-accent" data-order-id="${order.id}">
                             <option value="" disabled selected>Alterar Status</option>
-                            <option value="Em Análise">Em Análise</option>
+                            <option value="Pendente">Pendente</option> <option value="Em Análise">Em Análise</option>
                             <option value="Em Produção">Em Produção</option>
                             <option value="A Caminho">A Caminho</option>
                             <option value="Entregue">Entregue</option>
@@ -557,9 +596,55 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Função de Filtragem Inteligente
+    const applyFilters = () => {
+        const searchTerm = filterSearch.value.toLowerCase();
+        const statusTerm = filterStatus.value;
+        const dateTerm = filterDate.value; 
+
+        const filteredOrders = allLoadedOrders.filter(order => {
+            // 1. Filtro de Texto (ID Formatado, ID Real, Nome, Email)
+            const visualId = formatOrderId(order).toLowerCase();
+            const realId = order.id.toString();
+            const name = order.profiles?.full_name?.toLowerCase() || "";
+            const email = order.profiles?.email?.toLowerCase() || "";
+            
+            const matchesSearch = 
+                visualId.includes(searchTerm) ||
+                realId.includes(searchTerm) ||
+                name.includes(searchTerm) ||
+                email.includes(searchTerm);
+
+            // 2. Filtro de Status
+            const matchesStatus = statusTerm === 'all' || order.status === statusTerm;
+
+            // 3. Filtro de Data
+            let matchesDate = true;
+            if (dateTerm) {
+                const orderDate = new Date(order.created_at).toISOString().split('T')[0];
+                matchesDate = orderDate === dateTerm;
+            }
+
+            return matchesSearch && matchesStatus && matchesDate;
+        });
+
+        renderOrdersTable(filteredOrders);
+    };
+
+    // Listeners dos Filtros
+    filterSearch.addEventListener('input', applyFilters);
+    filterStatus.addEventListener('change', applyFilters);
+    filterDate.addEventListener('change', applyFilters);
+    
+    clearFiltersBtn.addEventListener('click', () => {
+        filterSearch.value = '';
+        filterStatus.value = 'all';
+        filterDate.value = '';
+        applyFilters(); 
+    });
+
     if (ordersListBody) {
         ordersListBody.addEventListener('click', (e) => {
-             // Listener para ver detalhes
              const viewBtn = e.target.closest('.view-details-btn');
              if (viewBtn) {
                  e.preventDefault();
@@ -574,7 +659,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newStatus = e.target.value;
                 const orderId = e.target.dataset.orderId;
                 
-                if (!confirm(`Deseja alterar o status do pedido #${orderId} para "${newStatus}"? O cliente será notificado.`)) {
+                const order = allLoadedOrders.find(o => o.id == orderId);
+                const displayId = order ? formatOrderId(order) : `#${orderId}`;
+
+                if (!confirm(`Deseja alterar o status do pedido ${displayId} para "${newStatus}"? O cliente será notificado.`)) {
                     e.target.value = ""; 
                     return;
                 }
@@ -592,7 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (error) throw error;
                     alert(`Status atualizado para "${newStatus}"!`);
-                    loadOrders();
+                    loadOrders(); 
 
                 } catch (error) {
                     console.error('Erro ao atualizar status:', error);

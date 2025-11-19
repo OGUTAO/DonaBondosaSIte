@@ -64,7 +64,7 @@
                 <div id="image-gallery-section" class="pt-4 border-t">
                     <h3 class="text-xl font-bold text-brand-primary mb-4">Galeria de Fotos do Produto</h3>
                     <div id="image-list" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                        </div>
+                    </div>
                     <div>
                         <label for="image-upload" class="block text-brand-primary font-bold mb-2">Adicionar nova foto</label>
                         <input type="file" id="image-upload" name="image-upload" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-secondary file:text-brand-primary hover:file:bg-brand-accent hover:file:text-white" accept="image/png, image/jpeg, image/webp">
@@ -88,7 +88,7 @@
             
             <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4">
                 <h2 class="text-2xl font-bold text-brand-primary">Produtos Cadastrados</h2>
-                <input type="search" id="search-product-input" placeholder="Buscar por nome..." class="w-full md:w-1/2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                <input type="search" id="search-product-input" placeholder="Buscar por nome..." class="w-full md:w-1/2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" maxlength="50">
             </div>
             
             <div id="product-list" class="space-y-4">
@@ -101,15 +101,36 @@
         <div class="bg-white p-8 rounded-lg shadow-lg">
             <h2 class="text-2xl font-bold text-brand-primary mb-6">Gerenciar Pedidos dos Clientes</h2>
             
-            <div class="mb-4 flex gap-4">
-                <select id="filter-status" class="p-2 border rounded focus:ring-2 focus:ring-brand-accent outline-none">
-                    <option value="all">Todos os Status</option>
-                    <option value="Em Análise">Em Análise</option>
-                    <option value="Em Produção">Em Produção</option>
-                    <option value="A Caminho">A Caminho</option>
-                    <option value="Entregue">Entregue</option>
-                    <option value="Cancelado">Cancelado</option>
-                </select>
+            <div class="bg-gray-50 p-4 rounded-lg mb-6 border border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-1">
+                        <label class="block text-sm font-bold text-gray-600 mb-1">Buscar</label>
+                        <input type="text" id="search-orders" placeholder="ID, Nome, Email..." class="w-full p-2 border rounded focus:ring-2 focus:ring-brand-accent outline-none" maxlength="50">
+                    </div>
+                    
+                    <div class="md:col-span-1">
+                        <label class="block text-sm font-bold text-gray-600 mb-1">Status</label>
+                        <select id="filter-status" class="w-full p-2 border rounded focus:ring-2 focus:ring-brand-accent outline-none">
+                            <option value="all">Todos os Status</option>
+                            <option value="Pendente">Pendente</option> <option value="Em Análise">Em Análise</option>
+                            <option value="Em Produção">Em Produção</option>
+                            <option value="A Caminho">A Caminho</option>
+                            <option value="Entregue">Entregue</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-1">
+                        <label class="block text-sm font-bold text-gray-600 mb-1">Data Específica</label>
+                        <input type="date" id="filter-date" class="w-full p-2 border rounded focus:ring-2 focus:ring-brand-accent outline-none">
+                    </div>
+
+                    <div class="md:col-span-1 flex items-end">
+                        <button id="clear-filters-btn" class="w-full bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-400 transition duration-300">
+                            Limpar Filtros
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div class="overflow-x-auto">

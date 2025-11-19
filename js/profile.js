@@ -5,14 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageContent = document.getElementById('page-content');
     const logoutButton = document.getElementById('logout-button');
     
-    // --- NÚMERO DO WHATSAPP DA EMPRESA (MUDE AQUI) ---
-    const COMPANY_PHONE = '5561991177578';
+    const COMPANY_PHONE = '5561991177578'; 
     
     let currentUser = null;
 
     const profileForm = document.getElementById('profile-form');
     const updateMessage = document.getElementById('update-message');
-
     const addressListContainer = document.getElementById('address-list-container');
     const addAddressBtn = document.getElementById('add-address-btn');
     const addressModal = document.getElementById('address-modal');
@@ -23,8 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const citySelect = document.getElementById('city');
     const cityOtherContainer = document.getElementById('city-other-container');
     const cityOtherInput = document.getElementById('city_other');
-
-    // Contêiner de Pedidos (NOVO)
     const contentPedidos = document.getElementById('content-pedidos');
     
     const tabs = {
@@ -48,17 +44,24 @@ document.addEventListener('DOMContentLoaded', () => {
         
         await loadUserProfile();
         await loadUserAddresses();
-        await loadUserOrders(); // Carrega os pedidos
+        await loadUserOrders(); 
 
         loadingSpinner.classList.add('hidden');
         pageContent.classList.remove('hidden');
 
         setupTabs();
-        checkUrlTab(); // Verifica se deve abrir a aba de pedidos
+        checkUrlTab(); 
         setupEventListeners();
     };
     
-    // --- LÓGICA DE PEDIDOS E WHATSAPP ---
+    const formatOrderId = (order) => {
+        if (!order.created_at || !order.sequence_number) return `#${order.id}`;
+        const date = new Date(order.created_at);
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        return `#${order.sequence_number}${month}${year}`;
+    };
+
     const loadUserOrders = async () => {
         const ordersContainer = contentPedidos.querySelector('div'); 
         
@@ -78,17 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (error) throw error;
 
-            // --- AVISO DE CANCELAMENTO ---
             let html = `
-                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8 rounded-r-lg">
                     <div class="flex">
                         <div class="flex-shrink-0">
                             <i class="fas fa-exclamation-triangle text-yellow-400"></i>
                         </div>
                         <div class="ml-3">
                             <p class="text-sm text-yellow-700">
-                                <strong>Política de Cancelamento:</strong> Você só pode cancelar seu pedido enquanto ele estiver "Em Análise". 
-                                Após o status mudar para "Em Produção", o cancelamento não será mais possível pelo site.
+                                <strong>Política de Cancelamento:</strong> Você pode cancelar seu pedido enquanto o status for "Pendente" ou "Em Análise". Após entrar "Em Produção", o cancelamento não será mais possível pelo site.
                             </p>
                         </div>
                     </div>
@@ -97,72 +98,86 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             if (orders.length === 0) {
-                ordersContainer.innerHTML = html + '<p class="text-gray-600">Você ainda não fez nenhum pedido.</p>';
+                ordersContainer.innerHTML = html + '<div class="text-center py-10 bg-gray-50 rounded-lg"><p class="text-gray-500 text-lg">Você ainda não fez nenhum pedido.</p><a href="produtos.html" class="text-brand-primary font-bold hover:underline mt-2 inline-block">Ir às compras</a></div>';
                 return;
             }
             
-            html += '<div class="space-y-6">';
+            html += '<div class="space-y-8">';
             
             orders.forEach(order => {
                 const date = new Date(order.created_at).toLocaleDateString('pt-BR');
+                const displayId = formatOrderId(order); 
                 
-                // Define cor e lógica do botão
-                let statusColor = 'text-gray-600';
+                let statusBadgeClass = 'bg-gray-100 text-gray-600';
                 let canCancel = false;
 
-                if (order.status === 'Em Análise' || order.status === 'Pendente') {
-                    statusColor = 'text-yellow-600';
-                    canCancel = true; // Pode cancelar
+                // Lógica de cores e cancelamento
+                if (order.status === 'Pendente') {
+                    statusBadgeClass = 'bg-gray-200 text-gray-700 border border-gray-300';
+                    canCancel = true; 
+                } else if (order.status === 'Em Análise') {
+                    statusBadgeClass = 'bg-yellow-100 text-yellow-800 border border-yellow-200';
+                    canCancel = true; 
                 } else if (order.status === 'Em Produção') {
-                    statusColor = 'text-blue-600';
+                    statusBadgeClass = 'bg-blue-100 text-blue-800 border border-blue-200';
                 } else if (order.status === 'A Caminho') {
-                    statusColor = 'text-purple-600';
+                    statusBadgeClass = 'bg-purple-100 text-purple-800 border border-purple-200';
                 } else if (order.status === 'Entregue') {
-                    statusColor = 'text-green-600';
+                    statusBadgeClass = 'bg-green-100 text-green-800 border border-green-200';
                 } else if (order.status === 'Cancelado') {
-                    statusColor = 'text-red-600';
+                    statusBadgeClass = 'bg-red-100 text-red-800 border border-red-200';
                 }
                 
-                const waLink = generateWhatsAppLink(order, currentUser.email);
+                const waLink = generateWhatsAppLink(order, currentUser.email, displayId);
 
                 let itemsHtml = '';
                 order.order_items.forEach(item => {
-                    // Verifica se produto existe (pode ter sido deletado)
                     const prodName = item.products ? item.products.name : 'Produto Indisponível';
-                    itemsHtml += `<li class="text-sm text-gray-600">${item.quantity}x ${prodName}</li>`;
+                    itemsHtml += `
+                        <li class="flex justify-between text-gray-700 py-1 border-b border-gray-100 last:border-0">
+                            <span>${item.quantity}x ${prodName}</span>
+                        </li>`;
                 });
 
-                // Botão de Cancelar (Só aparece se canCancel for true)
                 const cancelButton = canCancel 
-                    ? `<button class="cancel-order-btn text-red-500 text-sm hover:underline ml-4" data-id="${order.id}">Cancelar Pedido</button>` 
+                    ? `<button class="cancel-order-btn border border-red-500 text-red-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-50 transition text-sm" data-id="${order.id}">
+                         <i class="fas fa-times mr-1"></i> Cancelar Pedido
+                       </button>` 
                     : '';
 
-                // Botão de Pagar (Não aparece se estiver cancelado)
-                const payButton = order.status !== 'Cancelado'
-                    ? `<a href="${waLink}" target="_blank" class="inline-block bg-green-600 text-white py-2 px-6 rounded-full font-bold hover:bg-green-700 transition duration-300">
+                // --- ALTERAÇÃO AQUI: Botão só aparece se status for 'Pendente' ---
+                const payButton = order.status === 'Pendente'
+                    ? `<a href="${waLink}" target="_blank" class="bg-green-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-600 transition text-sm flex items-center shadow-sm">
                         <i class="fab fa-whatsapp mr-2"></i> Fazer Pagamento
                        </a>`
-                    : '<span class="text-gray-400 font-bold italic">Pedido Cancelado</span>';
+                    : '';
 
                 html += `
-                    <div class="border border-gray-200 rounded-lg p-6 bg-white shadow-sm hover:shadow-md transition">
-                        <div class="flex justify-between items-start mb-4">
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition duration-300">
+                        <div class="bg-gray-50 px-6 py-4 flex justify-between items-center border-b border-gray-200">
                             <div>
-                                <h3 class="font-bold text-lg text-brand-primary">Pedido #${order.id} ${cancelButton}</h3>
-                                <p class="text-sm text-gray-500">${date}</p>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">PEDIDO</span>
+                                <h3 class="font-bold text-xl text-brand-primary">${displayId}</h3>
+                                <p class="text-xs text-gray-400">${date}</p>
                             </div>
                             <div class="text-right">
-                                <span class="font-bold ${statusColor} text-lg">${order.status}</span>
-                                <p class="font-bold text-brand-accent mt-1">R$ ${order.total_amount.toFixed(2)}</p>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${statusBadgeClass}">
+                                    ${order.status}
+                                </span>
+                                <p class="font-bold text-brand-accent mt-1 text-lg">R$ ${order.total_amount.toFixed(2)}</p>
                             </div>
                         </div>
                         
-                        <div class="mb-4 bg-gray-50 p-3 rounded">
-                            <ul class="list-disc list-inside">${itemsHtml}</ul>
-                        </div>
-
-                        <div class="text-right">
-                            ${payButton}
+                        <div class="p-6">
+                            <h4 class="text-sm font-bold text-gray-500 mb-3 uppercase">ITENS</h4>
+                            <ul class="mb-6">
+                                ${itemsHtml}
+                            </ul>
+                            
+                            <div class="flex flex-wrap justify-end gap-3 pt-4 border-t border-gray-100">
+                                ${cancelButton}
+                                ${payButton}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -171,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
             html += '</div>';
             ordersContainer.innerHTML = html;
             
-            // Adiciona listener para os botões de cancelar
             document.querySelectorAll('.cancel-order-btn').forEach(btn => {
                 btn.addEventListener('click', handleCancelOrder);
             });
@@ -182,39 +196,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- FUNÇÃO PARA CANCELAR PEDIDO (CLIENTE) ---
     const handleCancelOrder = async (e) => {
-        const orderId = e.target.dataset.id;
+        const orderId = e.target.dataset.id; 
+        const btn = e.target;
         
-        if(!confirm('Tem certeza que deseja cancelar este pedido?')) return;
+        if(!confirm('Tem certeza que deseja cancelar este pedido? Esta ação não pode ser desfeita.')) return;
+        
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = 'Cancelando...';
 
         try {
             const { error } = await supabase
                 .from('orders')
                 .update({ status: 'Cancelado' })
-                .eq('id', orderId)
-                .eq('status', 'Em Análise'); // Segurança extra: só atualiza se ainda estiver em análise
+                .eq('id', orderId); 
 
             if (error) throw error;
 
             alert('Pedido cancelado com sucesso.');
-            loadUserOrders(); // Recarrega a lista
+            loadUserOrders(); 
 
         } catch (error) {
             console.error('Erro ao cancelar:', error);
-            alert('Não foi possível cancelar o pedido. Talvez ele já tenha entrado em produção.');
-            loadUserOrders();
+            alert('Não foi possível cancelar o pedido. Verifique se ele já entrou em produção.');
+            btn.disabled = false;
+            btn.innerHTML = originalText;
         }
     };
 
-    const generateWhatsAppLink = (order, email) => {
-        // Formata a lista de produtos para a mensagem
+    const generateWhatsAppLink = (order, email, displayId) => {
         let itemsList = "";
         order.order_items.forEach(item => {
-            itemsList += `- ${item.quantity}x ${item.products.name} (R$ ${item.price_at_purchase.toFixed(2)})\n`;
+            const prodName = item.products ? item.products.name : 'Produto Indisponível';
+            itemsList += `- ${item.quantity}x ${prodName} (R$ ${item.price_at_purchase.toFixed(2)})\n`;
         });
 
-        // Formata o endereço
         let addressStr = "Endereço Salvo";
         if (order.delivery_address) {
             if (order.delivery_address.description) {
@@ -226,8 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Mensagem final
-        const message = `Olá! Vim do site Com Carinho e gostaria de finalizar o pagamento do *Pedido #${order.id}*.\n\n` +
+        const message = `Olá! Vim do site e gostaria de finalizar o pagamento do *Pedido ${displayId}*.\n\n` +
             `*Cliente:* ${email}\n\n` +
             `*Itens:*\n${itemsList}\n` +
             `*Total:* R$ ${order.total_amount.toFixed(2)}\n` +
@@ -420,23 +436,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const setupTabs = () => {
         Object.keys(tabs).forEach(key => {
             tabs[key].addEventListener('click', () => {
-                // Reseta as classes
                 Object.values(tabs).forEach(t => t.className = 'py-4 px-1 border-b-2 border-transparent text-gray-500 hover:border-gray-400 hover:text-gray-700');
                 Object.values(contents).forEach(c => c.classList.add('hidden'));
-
-                // Ativa a clicada
                 tabs[key].className = 'py-4 px-1 border-b-2 font-semibold border-brand-primary text-brand-primary';
                 contents[key].classList.remove('hidden');
             });
         });
     };
     
-    // --- NOVA FUNÇÃO: Verifica a URL para abrir a aba certa ---
     const checkUrlTab = () => {
         const params = new URLSearchParams(window.location.search);
         const tab = params.get('tab');
         if (tab && tabs[tab]) {
-            tabs[tab].click(); // Simula o clique na aba
+            tabs[tab].click(); 
         }
     };
 
