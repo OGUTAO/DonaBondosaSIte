@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient.js';
-import { getCart, removeFromCart, updateQuantity } from './cart.js';
+import { getCart, clearCart, updateQuantity, removeFromCart } from './cart.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -12,27 +12,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingSpinner = document.getElementById('loading-spinner');
     const cartContent = document.getElementById('cart-content');
     
-    // --- NOVOS ELEMENTOS DE ENDEREÇO ---
     const addressSection = document.getElementById('delivery-address-section');
     const savedAddressSelect = document.getElementById('saved-address-select');
     const manualAddressForm = document.getElementById('manual-address-form');
     const addressError = document.getElementById('address-error');
     
-    // Inputs do formulário manual
     const citySelect = document.getElementById('city');
     const cityOtherContainer = document.getElementById('city-other-container');
     const cityOtherInput = document.getElementById('city_other');
     const cepInput = document.getElementById('cep');
     const streetInput = document.getElementById('street');
+    const complementInput = document.getElementById('complement');
     
     let allProducts = [];
     let allImagesMap = new Map(); 
+    let currentCartTotal = 0;
 
-    // --- NOVA FUNÇÃO: Carregar endereços salvos ---
     async function loadUserAddresses() {
         const userId = localStorage.getItem('currentUserId');
         if (!userId) {
-            // Se, por algum motivo, o usuário não estiver logado, esconde a seção
             addressSection.classList.add('hidden');
             return;
         }
@@ -46,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (error) throw error;
             
-            savedAddressSelect.innerHTML = '<option value="default" selected>-- Selecione um endereço salvo ou digite seu endereço --</option>'; // Limpa o "Carregando..."
+            savedAddressSelect.innerHTML = '<option value="default" selected>-- Selecione um endereço salvo --</option>';
             
             if (data.length > 0) {
                 data.forEach(addr => {
@@ -55,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
             
-            // Adiciona a opção de digitar novo endereço
             savedAddressSelect.innerHTML += '<option value="new">-- Digitar um novo endereço --</option>';
             
         } catch (err) {
@@ -72,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // --- NOVO: Carrega os endereços ---
         await loadUserAddresses();
 
         try {
@@ -145,7 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             cartItemsContainer.insertAdjacentHTML('beforeend', itemHtml);
         });
-
+        
+        currentCartTotal = subtotal;
         cartSubtotalEl.textContent = `R$ ${subtotal.toFixed(2)}`;
         cartTotalEl.textContent = `R$ ${subtotal.toFixed(2)}`;
     }
@@ -154,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         emptyCartMessage.classList.remove('hidden');
         cartSummaryContainer.classList.add('hidden');
         cartItemsContainer.classList.add('hidden');
-        addressSection.classList.add('hidden'); // --- NOVO ---
+        addressSection.classList.add('hidden');
         loadingSpinner.classList.add('hidden');
         cartContent.classList.remove('hidden');
     }
@@ -163,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         emptyCartMessage.classList.add('hidden');
         cartSummaryContainer.classList.remove('hidden');
         cartItemsContainer.classList.remove('hidden');
-        addressSection.classList.remove('hidden'); // --- NOVO ---
+        addressSection.classList.remove('hidden');
         loadingSpinner.classList.add('hidden');
         cartContent.classList.remove('hidden');
     }
@@ -202,17 +199,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- NOVO: Listener para o dropdown de endereço ---
     savedAddressSelect.addEventListener('change', () => {
         if (savedAddressSelect.value === 'new') {
             manualAddressForm.classList.remove('hidden');
         } else {
             manualAddressForm.classList.add('hidden');
-            addressError.textContent = ''; // Limpa o erro se o usuário selecionar um salvo
+            addressError.textContent = '';
         }
     });
     
-    // --- NOVO: Listener para o select de cidade (igual ao profile.js) ---
     citySelect.addEventListener('change', () => {
         if (citySelect.value === 'Outra') {
             cityOtherContainer.classList.remove('hidden');
@@ -224,55 +219,88 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- NOVO: Lógica de validação do Checkout ---
-    checkoutButton.addEventListener('click', () => {
-        addressError.textContent = ''; // Limpa erros anteriores
+    // --- LÓGICA DE FINALIZAR COMPRA ATUALIZADA ---
+    checkoutButton.addEventListener('click', async () => {
+        addressError.textContent = ''; 
         const selectedAddress = savedAddressSelect.value;
-        
-        let deliveryAddress = null;
+        let finalDeliveryAddress = null;
 
+        // 1. Validação de Endereço
         if (selectedAddress === 'default' || selectedAddress === 'error') {
             addressError.textContent = 'Por favor, selecione um endereço de entrega.';
             return;
         } 
         
         if (selectedAddress === 'new') {
-            // Se "novo endereço" for selecionado, valida o formulário manual
             const cep = cepInput.value;
             const street = streetInput.value;
             let city = citySelect.value;
-            
-            if (city === 'Outra') {
-                city = cityOtherInput.value;
-            }
+            if (city === 'Outra') city = cityOtherInput.value;
             
             if (!cep || !street || !city) {
-                addressError.textContent = 'Por favor, preencha todos os campos do novo endereço (CEP, Cidade e Rua).';
+                addressError.textContent = 'Por favor, preencha os campos obrigatórios do endereço.';
                 return;
             }
-            
-            // Sucesso na validação manual
-            deliveryAddress = {
-                cep: cep,
-                street: street,
-                city: city,
-                complement: document.getElementById('complement').value
-            };
-            
+            finalDeliveryAddress = { cep, city, street, complement: complementInput.value };
         } else {
-            // Sucesso, um endereço salvo foi selecionado
-            deliveryAddress = {
-                id: selectedAddress,
-                text: savedAddressSelect.options[savedAddressSelect.selectedIndex].text
-            };
+            const optionText = savedAddressSelect.options[savedAddressSelect.selectedIndex].text;
+            finalDeliveryAddress = { description: optionText };
         }
-        
-        // Se chegou até aqui, um endereço é válido
-        console.log("Endereço de entrega selecionado:", deliveryAddress);
-        alert('Pedido quase finalizado! Em breve entraremos em contato para confirmar o frete e o pagamento.');
-        
-        // Futuramente, você pode enviar o 'deliveryAddress' e o carrinho para o banco de dados.
-        // ex: await createOrder(getCart(), deliveryAddress);
+
+        // 2. Processamento do Pedido
+        const originalBtnText = checkoutButton.textContent;
+        checkoutButton.disabled = true;
+        checkoutButton.textContent = 'Processando...';
+
+        try {
+            const userId = localStorage.getItem('currentUserId');
+            const cart = getCart();
+
+            // A. Cria o Pedido
+            const { data: orderData, error: orderError } = await supabase
+                .from('orders')
+                .insert({
+                    user_id: userId,
+                    total_amount: currentCartTotal,
+                    status: 'Pendente',
+                    delivery_address: finalDeliveryAddress
+                })
+                .select()
+                .single();
+
+            if (orderError) throw orderError;
+
+            // B. Prepara os Itens
+            const orderItems = cart.map(item => {
+                const product = allProducts.find(p => p.id == item.id);
+                return {
+                    order_id: orderData.id,
+                    product_id: item.id,
+                    quantity: item.quantity,
+                    price_at_purchase: product.current_price
+                };
+            });
+
+            // C. Salva os Itens
+            const { error: itemsError } = await supabase
+                .from('order_items')
+                .insert(orderItems);
+
+            if (itemsError) throw itemsError;
+
+            // D. Sucesso! Limpa o carrinho e redireciona
+            clearCart();
+            alert('Pedido realizado com sucesso! Redirecionando para o pagamento...');
+            
+            // Redireciona para a aba de pedidos no perfil
+            window.location.href = 'perfil.html?tab=pedidos';
+
+        } catch (error) {
+            console.error('Erro no checkout:', error);
+            alert('Erro ao processar o pedido. Tente novamente.');
+            checkoutButton.disabled = false;
+            checkoutButton.textContent = originalBtnText;
+        }
     });
 
     loadCart();

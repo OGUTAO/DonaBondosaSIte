@@ -24,6 +24,7 @@
             
             <div class="hidden md:flex items-center space-x-2">
                 <span id="user-name-display" class="hidden text-gray-700 font-semibold mr-2"></span>
+
                 <a href="carrinho.html" class="relative text-2xl text-brand-primary hover:text-brand-accent p-2">
                     <i class="fas fa-shopping-cart"></i>
                     <span id="cart-icon-badge" class="hidden absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -50,17 +51,17 @@
         </nav>
 
         <div class="hidden md:hidden" id="mobile-menu">
-            <a href="produtos.html" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Produtos</a>
-            <a href="index.html#sobre" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Sobre Nós</a>
-            <a href="index.html#contato" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Contato</a>
-            <a href="carrinho.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Meu Carrinho</a>
             <div id="mobile-auth-links" class="border-t border-gray-200 mt-2 pt-2">
-                <span id="mobile-user-name-display" class="hidden block py-2 px-4 text-sm font-bold text-brand-primary"></span>
+                 <span id="mobile-user-name-display" class="hidden block py-2 px-4 text-sm font-bold text-brand-primary"></span>
                  <a id="mobile-login-link" href="login.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Login / Cadastre-se</a>
                  <a id="mobile-profile-link" href="perfil.html" class="hidden block py-2 px-4 text-sm hover:bg-brand-secondary">Meu Perfil</a>
                  <a id="mobile-admin-link" href="admin.html" class="hidden block py-2 px-4 text-sm font-semibold text-yellow-600 hover:bg-yellow-100">Painel de Controle</a>
                  <a id="mobile-logout-link" href="#" class="hidden block py-2 px-4 text-sm text-red-600 hover:bg-red-100">Sair</a>
             </div>
+            <a href="produtos.html" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Produtos</a>
+            <a href="index.html#sobre" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Sobre Nós</a>
+            <a href="index.html#contato" class="block py-2 px-4 text-sm hover:bg-brand-secondary">Contato</a>
+            <a href="carrinho.html" class="block py-2 px-4 text-sm font-semibold text-brand-primary hover:bg-brand-secondary">Meu Carrinho</a>
         </div>
     </header>
 
@@ -82,7 +83,7 @@
                     <h2 class="text-2xl font-bold text-brand-primary mb-6">Endereço de Entrega</h2>
                     
                     <div class="mb-4">
-                        <label for="saved-address-select" class="block text-brand-primary font-bold mb-2">Meus Endereços</OS>
+                        <label for="saved-address-select" class="block text-brand-primary font-bold mb-2">Meus Endereços</label>
                         <select id="saved-address-select" class="w-full p-3 border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-brand-accent">
                             <option value="default" selected>Carregando endereços...</option>
                         </select>
@@ -146,9 +147,15 @@
                             <span class="text-gray-600">Subtotal</span>
                             <span id="cart-subtotal" class="font-bold text-brand-primary">R$ 0,00</span>
                         </div>
-                        <div class="flex justify-between text-lg">
-                            <span class="text-gray-600">Frete</span>
-                            <span class="font-bold text-brand-primary">A calcular</span>
+                        
+                        <div class="text-sm text-gray-600 bg-brand-secondary bg-opacity-20 p-4 rounded border border-brand-secondary">
+                            <p class="mb-2"><strong>Sobre o Frete:</strong></p>
+                            <p class="leading-relaxed">
+                                O frete é calculado diretamente com nossos atendentes na hora do pagamento, ou solicite a um dos nossos atendentes, na hora do pagamento, sua preferência por buscar o produto no local a ser combinado para obter o <strong>frete gratuito</strong>.
+                            </p>
+                            <p class="mt-2 leading-relaxed">
+                                Finalize a compra para ser redirecionado e clique em <strong>fazer o pagamento</strong>.
+                            </p>
                         </div>
                         <div class="border-t pt-4 mt-4 flex justify-between text-2xl font-bold">
                             <span class="text-brand-primary">Total</span>
@@ -176,7 +183,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
                 <div>
                     <h3 class="text-2xl font-bold mb-2">Com Carinho</h3>
-                    <p class="text-brand-secondary">O aroma do cuidado, a leveza de um toque.💖 Sabonetes artesanais "Com Carinho" para você! 🛍️ Compre o seu e sinta a diferença!</p>
+                    <p class="text-brand-secondary">Cuidado artesanal para sua pele.</p>
                 </div>
                 <div>
                     <h4 class="font-bold text-lg mb-3">Links Rápidos</h4>
@@ -193,6 +200,22 @@
                 </div>
         </div>
     </footer>
+
+    <div id="login-prompt-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-[999]">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-lg w-full text-center relative">
+            <button id="close-login-prompt" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+            <h3 class="text-3xl font-bold text-brand-primary mb-4">Você precisa estar logado!</h3>
+            <p class="text-gray-700 leading-relaxed mb-8">Para adicionar produtos ao carrinho, você precisa fazer o login ou criar uma conta.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="login.html" class="w-full sm:w-auto bg-brand-primary text-white font-bold px-8 py-3 rounded-full text-lg hover:bg-brand-accent transition duration-300">
+                    Fazer Login
+                </a>
+                <a href="cadastro.html" class="w-full sm:w-auto bg-brand-secondary text-brand-primary font-bold px-8 py-3 rounded-full text-lg hover:bg-brand-accent hover:text-white transition duration-300">
+                    Criar Conta
+                </a>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="js/supabaseClient.js"></script>
     <script type="module" src="js/cart.js"></script>
