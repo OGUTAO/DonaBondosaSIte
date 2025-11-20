@@ -2,7 +2,37 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- LÓGICA DO MENU HAMBÚRGUER (ADICIONADA AQUI) ---
+    // --- LÓGICA DO DARK MODE (NOVO) ---
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const body = document.body;
+    const icon = themeToggleBtn?.querySelector('i');
+
+    // 1. Verifica se já tem preferência salva
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        if(icon) icon.className = 'fas fa-sun'; // Muda ícone para sol
+    }
+
+    // 2. Função de clique
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Previne comportamento de link se houver
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                if(icon) icon.className = 'fas fa-sun'; // Ícone de sol (para voltar ao claro)
+            } else {
+                localStorage.setItem('theme', 'light');
+                if(icon) icon.className = 'fas fa-moon'; // Ícone de lua (para ir ao escuro)
+            }
+        });
+    }
+    // --- FIM DA LÓGICA DO DARK MODE ---
+
+
+    // --- LÓGICA DO MENU HAMBÚRGUER ---
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
     
@@ -11,8 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileMenu.classList.toggle('hidden');
         });
     }
-    // --- FIM DA LÓGICA DO MENU ---
-
 
     // --- Lógica de navegação existente ---
     const activeClasses = ['text-brand-primary', 'font-bold'];
@@ -23,60 +51,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isIndexPage = (currentPath === 'index.html' || currentPath === '');
     
-    // --- LÓGICA 1: Destacar a Página Ativa (ex: produtos.html) ---
     navLinks.forEach(link => {
         const linkHref = link.getAttribute('href');
         const linkPath = linkHref.split('/').pop().split('#')[0];
 
-        // Limpa classes de todos os links que não são âncora ou carrinho
         if (!linkHref.startsWith('#') && !linkHref.includes('carrinho.html')) {
             link.classList.remove(...activeClasses);
             link.classList.add(...inactiveClasses);
         }
 
-        // Se o link corresponde à página atual (e não é a index), aplica as classes ativas.
         if (linkPath === currentPath && !isIndexPage && linkPath !== '') {
             link.classList.remove(...inactiveClasses);
             link.classList.add(...activeClasses);
         }
     });
 
-    // --- LÓGICA 2: Destaque de Rolagem (Scrollspy, SÓ NA INDEX.HTML) ---
     if (isIndexPage) {
         const sectionLinks = document.querySelectorAll('header nav a[href^="#"], header #mobile-menu a[href^="#"]');
-        
         const sections = [...sectionLinks].map(link => {
-            try {
-                const id = link.getAttribute('href');
-                return document.querySelector(id);
-            } catch (e) {
-                return null;
-            }
+            try { return document.querySelector(link.getAttribute('href')); } catch (e) { return null; }
         }).filter(Boolean);
 
         if (sections.length === 0) return;
 
-        // --- CORREÇÃO DA ÁREA DE DETECÇÃO ---
-        const observerOptions = {
-            root: null,
-            rootMargin: '-75% 0px -25% 0px',
-            threshold: 0
-        };
-
-        // --- CORREÇÃO DA LÓGICA DE DESTAQUE ---
+        const observerOptions = { root: null, rootMargin: '-75% 0px -25% 0px', threshold: 0 };
         const observerCallback = (entries) => {
             entries.forEach(entry => {
                 const id = entry.target.getAttribute('id');
                 const activeLinkQuery = `header nav a[href="#${id}"], header #mobile-menu a[href="#${id}"]`;
-
                 if (entry.isIntersecting) {
-                    // 1. Remove "ativo" (marrom) e adiciona "inativo" (cinza) de TODOS
                     sectionLinks.forEach(link => {
                         link.classList.remove(...activeClasses);
                         link.classList.add(...inactiveClasses);
                     });
-                    
-                    // 2. Adiciona "ativo" (marrom) e remove "inativo" (cinza) do link ATUAL
                     const activeLink = document.querySelector(activeLinkQuery);
                     if (activeLink) {
                         activeLink.classList.remove(...inactiveClasses);
@@ -85,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         };
-
         const observer = new IntersectionObserver(observerCallback, observerOptions);
         sections.forEach(section => observer.observe(section));
     }

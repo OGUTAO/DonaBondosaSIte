@@ -1,13 +1,14 @@
 /*
- * CSS Personalizado para Dona Bondosa
- * Autor: Gemini
- * Data: 2025-10-04
+ * CSS Personalizado - Com Carinho
+ * v2.0 - Dark Mode Completo e Admin
  */
 
 /* --- Configurações Gerais e Fontes --- */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #FBF9F6; /* Cor de fundo suave e elegante */
+    background-color: #FBF9F6; /* Fundo Claro Original */
+    color: #1F2937; /* Texto Escuro Padrão */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -15,43 +16,118 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* --- Cores da Marca (Utilities) --- */
-.bg-brand-primary { background-color: #8B5E34; }   /* Marrom aconchegante */
+.bg-brand-primary { background-color: #8B5E34; }   
 .text-brand-primary { color: #8B5E34; }
-.bg-brand-secondary { background-color: #D6C7AE; } /* Bege claro */
+.bg-brand-secondary { background-color: #D6C7AE; } 
 .text-brand-secondary { color: #D6C7AE; }
-.bg-brand-accent { background-color: #A98A66; }    /* Tom de madeira claro */
+.bg-brand-accent { background-color: #A98A66; }    
 .text-brand-accent { color: #A98A66; }
 .border-brand-primary { border-color: #8B5E34; }
 
-/* --- Estilos de Componentes --- */
+/* --- CARDS (Boxes brancas) --- */
+.bg-white {
+    background-color: #ffffff;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(139, 94, 52, 0.15); 
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
 
-/* Card de Produto */
-.sabonete-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* --- INPUTS --- */
+input, select, textarea {
+    background-color: #fff;
+    border: 1px solid #d1d5db; 
+    color: #1F2937;
+    transition: all 0.3s ease;
 }
-.sabonete-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+input:focus, select:focus, textarea:focus {
+    border-color: #8B5E34;
+    box-shadow: 0 0 0 3px rgba(139, 94, 52, 0.2);
+    outline: none;
 }
+
+/* =========================================
+   DARK MODE (TEMA ESCURO)
+   ========================================= */
+
+body.dark-mode {
+    background-color: #111827; /* Fundo quase preto */
+    color: #F9FAFB; /* Texto quase branco */
+}
+
+/* 1. Cards e Blocos no Dark Mode */
+body.dark-mode .bg-white,
+body.dark-mode .bg-gray-50 {
+    background-color: #1F2937; /* Cinza escuro */
+    border-color: #374151;
+    color: #F9FAFB;
+}
+
+/* 2. Header e Navegação */
+body.dark-mode header.bg-white {
+    background-color: #1F2937;
+    border-bottom: 1px solid #374151;
+}
+
+/* 3. Inputs no Dark Mode */
+body.dark-mode input, 
+body.dark-mode select, 
+body.dark-mode textarea {
+    background-color: #374151;
+    border-color: #4B5563;
+    color: #F9FAFB;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: #9CA3AF;
+}
+
+/* 4. Tabelas (Admin/Pedidos) */
+body.dark-mode table thead th {
+    background-color: #374151; /* Cabeçalho da tabela */
+    color: #E5E7EB;
+    border-bottom-color: #4B5563;
+}
+
+body.dark-mode table tbody tr {
+    border-bottom-color: #374151;
+    background-color: #1F2937; /* Fundo da linha */
+    color: #F3F4F6;
+}
+
+body.dark-mode table tbody tr:hover {
+    background-color: #111827; /* Hover mais escuro */
+}
+
+/* 5. CORREÇÃO DOS TEXTOS CINZAS (O Pulo do Gato) */
+/* Força todos os textos que eram cinza no modo claro a ficarem claros no modo escuro */
+body.dark-mode .text-gray-500,
+body.dark-mode .text-gray-600,
+body.dark-mode .text-gray-700,
+body.dark-mode .text-gray-800,
+body.dark-mode .text-gray-900 {
+    color: #E5E7EB !important; /* Branco gelo */
+}
+
+/* Mantém cores de status legíveis */
+body.dark-mode .text-red-600 { color: #F87171; }
+body.dark-mode .text-green-600 { color: #34D399; }
+body.dark-mode .text-blue-600 { color: #60A5FA; }
 
 /* --- Animações --- */
-
-/* Animação do Loader (Spinner) */
 .loader {
-    border: 4px solid #f3f3f3; /* Cinza claro */
-    border-top: 4px solid #8B5E34; /* Cor primária da marca */
+    border: 4px solid #f3f3f3; 
+    border-top: 4px solid #8B5E34; 
     border-radius: 50%;
     width: 30px;
     height: 30px;
     animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
-/* --- NOVA CLASSE DE TRUNCAMENTO DE LINHA --- */
 .truncate-4-lines {
     display: -webkit-box;
     -webkit-box-orient: vertical;

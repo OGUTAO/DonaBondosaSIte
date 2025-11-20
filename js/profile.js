@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Lógica de cores e cancelamento
                 if (order.status === 'Pendente') {
-                    statusBadgeClass = 'bg-gray-200 text-gray-700 border border-gray-300';
+                    statusBadgeClass = 'bg-black-200 text-gray-700 border border-gray-300';
                     canCancel = true; 
                 } else if (order.status === 'Em Análise') {
                     statusBadgeClass = 'bg-yellow-100 text-yellow-800 border border-yellow-200';

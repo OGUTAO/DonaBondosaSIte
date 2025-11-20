@@ -23,6 +23,9 @@
             </div>
             
             <div class="hidden md:flex items-center space-x-2">
+                <button id="theme-toggle" class="text-2xl text-brand-primary hover:text-brand-accent p-2 mr-2 focus:outline-none" title="Alternar Tema">
+                    <i class="fas fa-moon"></i>
+                </button>
                 <span id="user-name-display" class="hidden text-gray-700 font-semibold mr-2"></span>
 
                 <a href="carrinho.html" class="relative text-2xl text-brand-primary hover:text-brand-accent p-2">
@@ -97,8 +100,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="md:col-span-1">
                                 <label for="cep" class="block text-brand-primary font-bold mb-2">CEP</label>
-                                <input type="text" id="cep" name="cep" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" maxlength="50">
-                            </div>
+                                <input type="text" id="cep" name="cep" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" maxlength="50">                            </div>
                             <div class="md:col-span-2">
                                 <label for="city" class="block text-brand-primary font-bold mb-2">Cidade (RA)</label>
                                 <select id="city" name="city" class="w-full px-3 py-2 border rounded-lg bg-white">
@@ -122,16 +124,13 @@
                         </div>
                         <div id="city-other-container" class="hidden">
                             <label for="city_other" class="block text-brand-primary font-bold mb-2">Especifique a Cidade (RA)</label>
-                            <input type="text" id="city_other" name="city_other" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" maxlength="50">
-                        </div>
+                            <input type="text" id="city_other" name="city_other" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" maxlength="50">                        </div>
                         <div>
                             <label for="street" class="block text-brand-primary font-bold mb-2">Endereço (Rua, Quadra, Nº)</label>
-                            <input type="text" id="street" name="street" class="w-full px-3 py-2 border rounded-lg" maxlength="50">
-                        </div>
+                            <input type="text" id="street" name="street" class="w-full px-3 py-2 border rounded-lg" maxlength="50">                        </div>
                         <div>
                             <label for="complement" class="block text-brand-primary font-bold mb-2">Complemento (Apto, Casa)</label>
-                            <input type="text" id="complement" name="complement" class="w-full px-3 py-2 border rounded-lg" maxlength="50">
-                        </div>
+                            <input type="text" id="complement" name="complement" class="w-full px-3 py-2 border rounded-lg" maxlength="50">                        </div>
                     </div>
                     
                     <div id="address-error" class="text-red-600 font-semibold mt-4"></div>
@@ -183,7 +182,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
                 <div>
                     <h3 class="text-2xl font-bold mb-2">Com Carinho</h3>
-                    <p class="text-brand-secondary">Cuidado artesanal para sua pele.</p>
+                    <p class="text-brand-secondary">O aroma do cuidado, a leveza de um toque. Sabonetes artesanais "Com Carinho" para você! Compre o seu e sinta a diferença!</p>
                 </div>
                 <div>
                     <h4 class="font-bold text-lg mb-3">Links Rápidos</h4>

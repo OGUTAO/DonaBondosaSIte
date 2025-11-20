@@ -548,7 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const updatedBy = order.admin_profile ? `<br><span class="text-xs text-gray-500">Att por: ${order.admin_profile.full_name}</span>` : '';
 
             let statusColor = 'bg-gray-200 text-gray-800';
-            if (order.status === 'Pendente') statusColor = 'bg-gray-300 text-gray-700'; // ADICIONADO
+            if (order.status === 'Pendente') statusColor = 'bg-gray-300 text-black-700'; // ADICIONADO
             if (order.status === 'Em Análise') statusColor = 'bg-yellow-200 text-yellow-800';
             if (order.status === 'Em Produção') statusColor = 'bg-blue-200 text-blue-800';
             if (order.status === 'A Caminho') statusColor = 'bg-purple-200 text-purple-800';
