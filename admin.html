@@ -13,32 +13,36 @@
 <script src="js/admin-guard.js"></script>
 
 <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-3xl font-bold text-brand-primary">
-                Com Carinho <span class="text-lg font-normal text-brand-accent">(Painel Admin)</span>
-            </a>
-            
-            <div class="hidden md:flex items-center space-x-8">
-            </div>
-            
-            <div class="hidden md:flex items-center">
-                
-                <button id="theme-toggle" class="text-2xl text-brand-primary hover:text-brand-accent p-2 mr-4 focus:outline-none" title="Alternar Tema">
-                    <i class="fas fa-moon"></i>
-                </button>
-                
-                <span id="user-name-display" class="hidden text-gray-700 font-semibold mr-6"></span>
-                
-                <a href="index.html" class="inline-block bg-brand-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-brand-accent transition duration-300 shadow-sm">
-                    <i class= Voltar ao Menu></i> Voltar ao Menu
-                </a>                                
-            </div>
-
-            <button class="md:hidden" id="mobile-menu-button">
-                <i class="fas fa-bars text-2xl text-brand-primary"></i>
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="index.html" class="text-3xl font-bold text-brand-primary">
+            Com Carinho <span class="text-lg font-normal text-brand-accent">(Painel Admin)</span>
+        </a>
+        
+        <div class="hidden md:flex items-center">
+            <button id="theme-toggle" class="text-2xl text-brand-primary hover:text-brand-accent p-2 mr-4 focus:outline-none" title="Alternar Tema">
+                <i class="fas fa-moon"></i>
             </button>
-        </nav>
-    </header>
+            <span id="user-name-display" class="hidden text-gray-700 font-semibold mr-6"></span>
+            <a href="index.html" class="inline-block bg-brand-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-brand-accent transition duration-300 shadow-sm">
+                <i class=Voltar ao Menu></i> Voltar ao Menu
+            </a>                                
+        </div>
+
+        <button class="md:hidden" id="mobile-menu-button">
+            <i class="fas fa-bars text-2xl text-brand-primary"></i>
+        </button>
+    </nav>
+
+    <div class="hidden md:hidden border-t border-gray-200 bg-white" id="mobile-menu">
+        <div class="px-6 py-6 space-y-4 flex flex-col items-center">
+            <span id="mobile-user-name-display" class="text-gray-700 font-bold text-lg"></span>
+            
+            <a href="index.html" class="w-full text-center bg-brand-primary text-white px-6 py-3 rounded-lg font-bold hover:bg-brand-accent transition duration-300 shadow-sm">
+                <i class="fas fa-arrow-left mr-2"></i> Voltar ao Menu
+            </a>
+        </div>
+    </div>
+</header>
 
 <main class="container mx-auto px-6 py-12">
     
@@ -61,11 +65,13 @@
                 
                 <div>
                     <label for="name" class="block text-brand-primary font-bold mb-2">Nome do Produto</label>
-                    <input type="text" id="name" name="name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" required maxlength="300">                </div>
+                    <input type="text" id="name" name="name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" required maxlength="300">
+                </div>
                 
                 <div>
                     <label for="description" class="block text-brand-primary font-bold mb-2">Descrição</label>
-                    <textarea id="description" name="description" rows="4" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" maxlength="300"></textarea>                </div>
+                    <textarea id="description" name="description" rows="4" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent" maxlength="300"></textarea>
+                </div>
 
                 <div>
                     <label for="current_price" class="block text-brand-primary font-bold mb-2">Preço Atual (R$)</label>
@@ -83,7 +89,7 @@
                 <div id="image-gallery-section" class="pt-4 border-t">
                     <h3 class="text-xl font-bold text-brand-primary mb-4">Galeria de Fotos do Produto</h3>
                     <div id="image-list" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                    </div>
+                        </div>
                     <div>
                         <label for="image-upload" class="block text-brand-primary font-bold mb-2">Adicionar nova foto</label>
                         <input type="file" id="image-upload" name="image-upload" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-secondary file:text-brand-primary hover:file:bg-brand-accent hover:file:text-white" accept="image/png, image/jpeg, image/webp">
@@ -97,7 +103,7 @@
                 
                 <div class="flex justify-end space-x-4 pt-4">
                     <button type="button" id="cancel-edit-btn" class="hidden bg-gray-500 text-white py-2 px-6 rounded-lg font-bold hover:bg-gray-600 transition duration-300">Cancelar</button>
-                    <button type="button" id="clear-form-btn" class="bg-gray-300 text-gray-800 py-2 px-6 rounded-lg font-bold hover:bg-gray-400 transition duration-300">Limpar</button>
+                    <button type="button" id="clear-form-btn" class="bg-gray-300 text-black-800 py-2 px-6 rounded-lg font-bold hover:bg-black-400 transition duration-300">Limpar</button>
                     <button type="submit" class="bg-brand-primary text-white py-2 px-6 rounded-lg font-bold hover:bg-brand-accent transition duration-300">Salvar Produto</button>
                 </div>
             </form>
@@ -124,13 +130,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="md:col-span-1">
                         <label class="block text-sm font-bold text-gray-600 mb-1">Buscar</label>
-                        <input type="text" id="search-orders" placeholder="ID, Nome, Email..." class="w-full p-2 border rounded focus:ring-2 focus:ring-brand-accent outline-none" maxlength="50">                    </div>
+                        <input type="text" id="search-orders" placeholder="ID, Nome, Email..." class="w-full p-2 border rounded focus:ring-2 focus:ring-brand-accent outline-none" maxlength="50">
+                    </div>
                     
                     <div class="md:col-span-1">
                         <label class="block text-sm font-bold text-gray-600 mb-1">Status</label>
                         <select id="filter-status" class="w-full p-2 border rounded focus:ring-2 focus:ring-brand-accent outline-none">
                             <option value="all">Todos os Status</option>
-                            <option value="Pendente">Pendente</option> <option value="Em Análise">Em Análise</option>
+                            <option value="Pendente">Pendente</option> 
+                            <option value="Em Análise">Em Análise</option>
                             <option value="Em Produção">Em Produção</option>
                             <option value="A Caminho">A Caminho</option>
                             <option value="Entregue">Entregue</option>
@@ -144,7 +152,7 @@
                     </div>
 
                     <div class="md:col-span-1 flex items-end">
-                        <button id="clear-filters-btn" class="w-full bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-400 transition duration-300">
+                        <button id="clear-filters-btn" class="w-full bg-gray-300 text-black-700 font-bold py-2 px-4 rounded hover:bg-gray-400 transition duration-300">
                             Limpar Filtros
                         </button>
                     </div>
@@ -213,5 +221,6 @@
 <script type="module" src="js/admin.js"></script>
 <script type="module" src="js/navigation.js"></script>
 <script type="module" src="js/session.js"></script>
+
 </body>
 </html>
