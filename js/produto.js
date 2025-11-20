@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const reviewLoginPrompt = document.getElementById('review-login-prompt');
     const reviewList = document.getElementById('review-list');
     
+    // --- NOVOS ELEMENTOS DE AVISO ---
+    // Vamos criar esses elementos via JS se necessário, ou usar o alert
+    
     let currentProductId = null;
     let currentUser = null;
 
@@ -136,16 +139,57 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
     
-    async function checkUserForReview() {
-        const { data } = await supabase.auth.getUser();
-        currentUser = data.user;
-        
-        if (currentUser) {
-            reviewForm.classList.remove('hidden');
-            reviewLoginPrompt.classList.add('hidden');
-        } else {
+    // --- NOVA FUNÇÃO DE VERIFICAÇÃO ---
+    async function checkReviewEligibility() {
+        if (!currentUser) {
             reviewForm.classList.add('hidden');
             reviewLoginPrompt.classList.remove('hidden');
+            return;
+        }
+
+        reviewLoginPrompt.classList.add('hidden');
+
+        // 1. Verifica se já avaliou
+        const { data: existingReviews } = await supabase
+            .from('product_reviews')
+            .select('id')
+            .eq('user_id', currentUser.id)
+            .eq('product_id', currentProductId);
+
+        if (existingReviews && existingReviews.length > 0) {
+            reviewForm.innerHTML = '<p class="text-green-600 font-bold bg-green-50 p-4 rounded border border-green-200">Você já avaliou este produto. Obrigado! ❤️</p>';
+            reviewForm.classList.remove('hidden');
+            return;
+        }
+
+        // 2. Verifica se comprou e recebeu (Status 'Entregue')
+        // Precisamos buscar nos itens de pedido onde o pedido tem status 'Entregue'
+        const { data: purchases } = await supabase
+            .from('order_items')
+            .select(`
+                id, 
+                orders!inner (
+                    status, 
+                    user_id
+                )
+            `)
+            .eq('product_id', currentProductId)
+            .eq('orders.user_id', currentUser.id)
+            .eq('orders.status', 'Entregue');
+
+        if (purchases && purchases.length > 0) {
+            // Tudo certo, pode avaliar
+            reviewForm.classList.remove('hidden');
+        } else {
+            // Não comprou ou não recebeu
+            reviewForm.innerHTML = `
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                    <p class="text-yellow-700">
+                        <strong>Apenas compradores podem avaliar.</strong><br>
+                        Para deixar sua opinião, você precisa comprar este produto e aguardar a entrega ser confirmada.
+                    </p>
+                </div>`;
+            reviewForm.classList.remove('hidden');
         }
     }
 
@@ -171,36 +215,52 @@ document.addEventListener('DOMContentLoaded', async () => {
                     comment: comment
                 });
             
-            if (error) throw error;
+            if (error) {
+                // Se o banco bloquear (caso alguém tente burlar o HTML), mostramos o erro
+                if (error.message.includes('policy')) {
+                    throw new Error('Você não tem permissão para avaliar este produto (é necessário ter comprado e recebido).');
+                }
+                throw error;
+            }
             
             alert('Avaliação enviada com sucesso!');
             reviewForm.reset();
+            
+            // Recarrega a elegibilidade (vai esconder o form e mostrar "Já avaliou")
+            await checkReviewEligibility();
             
             const { data: reviews } = await supabase.from('product_reviews').select('*, profiles(full_name)').eq('product_id', currentProductId).order('created_at', { ascending: false });
             populateReviews(reviews);
 
         } catch (error) {
             console.error('Erro ao salvar avaliação:', error);
-            alert('Erro ao salvar sua avaliação. Tente novamente.');
+            alert(error.message || 'Erro ao salvar sua avaliação. Tente novamente.');
         }
     }
 
     const productId = getProductId();
     if (productId) {
-        loadProductData(productId);
-        checkUserForReview();
+        // Primeiro carrega o produto para ter o ID
+        await loadProductData(productId);
         
-        // --- ATUALIZADO: Listener de clique com verificação de login ---
-        addToCartBtn.addEventListener('click', () => {
-            const userId = localStorage.getItem('currentUserId');
-            if (!userId) {
-                // Se não estiver logado, mostra o pop-up
-                document.getElementById('login-prompt-modal')?.classList.remove('hidden');
-            } else {
-                // Se estiver logado, adiciona ao carrinho
-                addToCart(currentProductId, 1);
-            }
-        });
+        // Pega o usuário atual
+        const { data: { user } } = await supabase.auth.getUser();
+        currentUser = user;
+
+        // --- NOVA LÓGICA DE VERIFICAÇÃO AO INICIAR ---
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        if(addToCartBtn) {
+             addToCartBtn.addEventListener('click', () => {
+                const userId = localStorage.getItem('currentUserId');
+                if (!userId) {
+                    document.getElementById('login-prompt-modal')?.classList.remove('hidden');
+                } else {
+                    addToCart(currentProductId, 1);
+                }
+            });
+        }
+       
+        await checkReviewEligibility(); // Verifica se pode mostrar o form
 
         reviewForm.addEventListener('submit', handleReviewSubmit);
 
